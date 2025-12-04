@@ -1,4 +1,4 @@
-% 9x9 Strimko (Chain Sudoku) model
+% Strimko (Chain Sudoku) model
 
 #const n = 9.
 
