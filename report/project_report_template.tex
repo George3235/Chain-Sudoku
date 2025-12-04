@@ -32,31 +32,20 @@ nomarginpar,% We don't want any margin paragraphs
 \fancyhead[C]{} % center header
 \fancyhead[R]{\thepage} % right header
 
-\title{Project Title}
-\author{Team\_member 1, Team\_member 2, ...}
+\title{Sudoku Game with ASP-based Hint System}
+\author{Emil Fröding, Erik Wöhry, George Saba, Rebecca Huynh}
 %\date{}
 \begin{document}
 
 \maketitle  % This command generates the title
-
+\newpage
 \section{Introduction and Movivation}
 
-{\it 
-\begin{itemize}
-  \item Clearly define the scope of your project (what you cover, what you do not).
-\end{itemize}
-}
+ note: Clearly define the scope of your project (what you cover, what you do not). inte klar, första layout
 
-\noindent Note:
-\begin{itemize}
-  \item In this template, all italic text should be removed and replaced with your own text (which should not be italic); the italic text is just a placeholder letting you know what to write there.
+The aim of this project is to demonstrate how Answer Set Programming can be used to analyze puzzle states, detect unsolvable solution/configurations?, and generate hints during gameplay. We will implement an interactive version of Chain Sudoku, also known as Strimko, supported by an ASP-based reasoning component. In Chain sudoku, the traditional 3x3 boxes are replaced by nine irregular "chains", each of which must contain the digits 1-9 exactly once. This gives us a great opportunity to adapt the standard Sudoku encoding and show how ASP can flexibly capture alternative constraint structures. This project will also feature a simple React frontend to accomplish the interactive part. By forwarding the player's current entries to the ASP solver. The frontend is intentionally minimal: it does not validate each move, enforce Sudoku rules during input, or allow penciling notes, as the focus is on the reasoning capabilities rather than interface complexity. The solver will evaluate whether the puzzle remains solvable based on the player's inputs and can provide hints by computing a valid completed solution. 
 
-  \item If you use Figures or Tables, please make sure to give each one a caption and a figure/table number and refer to them from the main text!
-
-  \item References should be provided where applicable.
-
-\end{itemize}
-
+\newpage
 \section{Methodology}
 
 Content depends on your chosen track, but structure is similar
@@ -70,13 +59,13 @@ Content depends on your chosen track, but structure is similar
   \item Explain why ASP is suited for this reasoning.
 \end{itemize} 
 }
-
-\subsection{Evaluation}
+\newpage
+\section{Evaluation}
 
 {\it Describe how you evaluated your system (according to the evaluation suggestions given in the project description), and present the evaluation results.}
 
-
-\subsection{Discussion and Conclusion}
+\newpage
+\section{Discussion and Conclusion}
 
 {\it
 \begin{itemize}
@@ -85,6 +74,7 @@ Content depends on your chosen track, but structure is similar
 \end{itemize}
 }
 
+\newpage
 \begin{thebibliography}{99}
 
 \bibitem{}
