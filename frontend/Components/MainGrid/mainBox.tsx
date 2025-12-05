@@ -12,7 +12,7 @@ import { LuPenOff } from "react-icons/lu";
 import { useState } from "react";
 
 const MainBox = () => {
-  const [inUse, setinUse] = useState(false);
+  
 
   return (
     <Container
@@ -134,16 +134,13 @@ const MainBox = () => {
                   borderRadius: 2,
                   backgroundColor: "#212529ff",
                   display: "grid",
-                  gridTemplateColumns: "repeat(3, 1fr)",
+                  gridTemplateColumns: "repeat(2, 1fr)",
                   gap: 1,
                   p: 1,
                 }}
               >
                 <Button size="large" sx={{ borderRadius: 25 }}>
                   <FaEraser size={70} />
-                </Button>
-                <Button size="large" sx={{ borderRadius: 25 }} onClick={() => setinUse(prev => !prev)}>
-                  {inUse ? <LuPenOff size={70}/>: <FaPencil size={70} />}
                 </Button>
                 <Button size="large" sx={{ borderRadius: 25 }}>
                      <FaLightbulb size={70} />
