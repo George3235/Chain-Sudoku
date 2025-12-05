@@ -18,11 +18,11 @@ def asp_solve(instance_file="../ASP/instances/sudoku_easy_instance.lp", rules_fi
 
 def extract_solution(symbols):
     """
-    Convert sol(R,C,B,V) atoms into a 9x9 Python matrix.
+    Convert filled(R,C,CH,V) atoms into a 9x9 Python matrix.
     """
     grid = [[0 for _ in range(9)] for _ in range(9)]
     for sym in symbols:
-        if sym.name == "sol":
+        if sym.name == "filled":
             r = sym.arguments[0].number
             c = sym.arguments[1].number
             v = sym.arguments[3].number
