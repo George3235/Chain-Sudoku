@@ -25,7 +25,7 @@ filled(R,C,CH,V) :- cell(R,C,CH,0), assign(R,C,V).
 :- filled(R1,C,_,V), filled(R2,C,_,V), R1 != R2.
 
 % Define the chains from the input
-chain(CH) :- cell(_,_,CH,_).
+% chain(CH) :- cell(_,_,CH,_).
 
 % No two different cells in the same chain can have the same value
 :- filled(R1,C1,CH,V), filled(R2,C2,CH,V), (R1,C1) != (R2,C2).
