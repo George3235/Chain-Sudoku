@@ -16,11 +16,12 @@ const NavAppBar = () => {
         sx={{
           backgroundColor: "#212529ff", // Navbar Bakgrund färgen
           boxShadow: "none", // För att ta bort skuggan
+          height:"5vh"
         }}
       >
-        <Toolbar>
+        <Toolbar sx={{height:"10vh"}}>
           <IconButton color="inherit">
-            <BsGrid3X3GapFill size={22} />
+            <BsGrid3X3GapFill size={40} />
           </IconButton>
           <Typography
             variant="h6"
