@@ -11,34 +11,46 @@ import { FaLightbulb } from "react-icons/fa";
 import { LuPenOff } from "react-icons/lu";
 import { useState } from "react";
 
+import Board from "./Board"
+import type {Difficulty} from "../../src/puzzles/Puzzles"
+import { EASY_INITIAL_CELLS } from "../../src/puzzles/Puzzles";
 const MainBox = () => {
-  
-
+  // RAKT FRÅN CHAT
+  const [difficulty] = useState<Difficulty>("easy"); // sen kopplar du till navbar-knappar
+  const [cells, setCells] = useState(EASY_INITIAL_CELLS);
   return (
     <Container
       maxWidth="xl"
-      sx={{ backgroundColor: "#212529ff", height: "75vh" }}
+      sx={{ backgroundColor: "#212529ff", height: "60vh" }}
     >
       {/*Definerar områden för Själva Cirklarna grid och allt annat */}
       <Grid container sx={{ height: "100%" }}>
+        {/*RAKT FRÅN CHAT */}
         <Grid
           size={8}
           maxWidth="lg"
-          sx={{ background: "yellow", height: "100%" }}
+          sx={{ background: "#212529ff", height: "100%", display: "flex", alignItems: "center", justifyContent: "center"}}
         >
+          <Board
+            difficulty={difficulty}
+            cells={cells}
+            onCellClick={(cell) => {
+              // här kommer du senare uppdatera state beroende på vald siffra
+              console.log("clicked cell", cell);
+            }}
+          />
           {/* Den delen innehåller själva området för spelet */}
         </Grid>
-        <Grid size={4} sx={{ backgroundColor: "#212529ff", height: "100%" }}>
+        <Grid size={4} sx={{ height: "100%" }}>
           {/* Deb delen innehåller området för hjälpmedel */}
           <Grid
             container
-            sx={{ flex: 1, backgroundColor: "#212529ff", height: "100%" }}
+            sx={{ flex: 1, height: "100%" }}
             direction="column"
           >
             {/* Container för Numbers */}
             <Grid
               sx={{
-                backgroundColor: "#212529ff",
                 flex: 1,
                 height: "100%",
                 justifyContent: "flex-end",
@@ -52,7 +64,6 @@ const MainBox = () => {
                   m: 2,
                   height: "50%",
                   borderRadius: 2,
-                  backgroundColor: "#212529ff",
                   display: "grid",
                   gridTemplateColumns: "repeat(3, 1fr)",
                   gridTemplateRows: "repeat(3, 1fr)",
@@ -125,14 +136,13 @@ const MainBox = () => {
             </Grid>
             {/* Container för help btn:s */}
             <Grid
-              sx={{ backgroundColor: "#212529ff", flex: 1, height: "100%" }}
+              sx={{  flex: 1, height: "100%" }}
             >
               <Box
                 sx={{
                   m: 2,
                   height: "20%",
                   borderRadius: 2,
-                  backgroundColor: "#212529ff",
                   display: "grid",
                   gridTemplateColumns: "repeat(2, 1fr)",
                   gap: 1,
