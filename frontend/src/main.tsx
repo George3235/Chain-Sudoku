@@ -4,8 +4,8 @@ import './index.css'
 import App from './App.tsx'
 import Box  from '@mui/material/Box'
 // Testar Components med den 
-import NavAppBar from '../Components/Navbar/navbar.tsx'
-import MainBox from '../Components/MainGrid/mainBox.tsx'
+import NavAppBar from './Components/Navbar/navbar.tsx'
+import MainBox from './Components/MainGrid/mainBox.tsx'
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Box sx={{ minHeight:"100vh", display:"flex", flexDirection:"column"}}>
