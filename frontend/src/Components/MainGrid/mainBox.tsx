@@ -6,11 +6,20 @@ import Typography from "@mui/material/Typography";
 import { FaEraser } from "react-icons/fa6";
 import { FaLightbulb } from "react-icons/fa";
 import { useState, type JSX } from "react";
-
 // Bilden för Easy
 import easy from "../../assets/Easy_Blank.png";
 
+// Typ för cellerna
+type Cell = {
+  row: number;
+  column: number;
+  given?: number; // Initial Siffran
+  value?: number; // Användarens inmatning
+}
+
+
 const MainBox = () => {
+  //const [cells, setCells] = useState<Cell[]>(/* Init */);
   // För att skapa cellerna
   const cells: JSX.Element[] = [];
 
@@ -23,7 +32,7 @@ const MainBox = () => {
              border:"1px solid rgba(255,250,250,0.15)", display:"flex", alignItems:"center", justifyContent:"center" }}
 
           onClick={() => {
-            console.log("Clicked cell", { row, col: column });
+            console.log("Clicked cell", { row, column });
           }}
         />
       )
