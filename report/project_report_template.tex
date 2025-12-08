@@ -43,22 +43,60 @@ nomarginpar,% We don't want any margin paragraphs
 
  note: Clearly define the scope of your project (what you cover, what you do not). inte klar, första layout
 
-The aim of this project is to demonstrate how Answer Set Programming can be used to analyze puzzle states, detect unsolvable solution/configurations?, and generate hints during gameplay. We will implement an interactive version of Chain Sudoku, also known as Strimko, supported by an ASP-based reasoning component. In Chain sudoku, the traditional 3x3 boxes are replaced by nine irregular "chains", each of which must contain the digits 1-9 exactly once. This gives us a great opportunity to adapt the standard Sudoku encoding and show how ASP can flexibly capture alternative constraint structures. This project will also feature a simple React frontend to accomplish the interactive part. By forwarding the player's current entries to the ASP solver. The frontend is intentionally minimal: it does not validate each move, enforce Sudoku rules during input, or allow penciling notes, as the focus is on the reasoning capabilities rather than interface complexity. The solver will evaluate whether the puzzle remains solvable based on the player's inputs and can provide hints by computing a valid completed solution. 
+ lägg till varning om man har placerat ut något fel. 
+
+The aim of this project is to demonstrate how Answer Set Programming can be used to analyze puzzle states, detect unsolvable solution, and generate hints during gameplay. We will implement an interactive version of Chain Sudoku, also known as Strimko, supported by an ASP-based reasoning component. In Chain sudoku, the traditional 3x3 boxes are replaced by nine irregular "chains", each of which must contain the digits 1-9 exactly once. This gives us a great opportunity to adapt the standard Sudoku encoding and show how ASP can flexibly capture alternative constraint structures. This project will also feature a simple React frontend to accomplish the interactive part. By forwarding the player's current entries to the ASP solver. The frontend is intentionally minimal: it does not validate each move, enforce Sudoku rules during input, or allow penciling notes, as the focus is on the reasoning capabilities rather than interface complexity. The solver will evaluate whether the puzzle remains solvable based on the player's inputs and can provide hints by computing a valid completed solution. 
 
 \newpage
 \section{Methodology}
 
-Content depends on your chosen track, but structure is similar
+\subsection{System Overview}
+react frontend, backend ASP solver (clingo), a communication layer that sends the current grid as facts to ASP, ASP returns a solution (if solvable) or no solution
 
-\subsection*{ASP}
+This project is build on a frontend and backend. Frontend is done with React, and the focus it to create in interactive view and easy to understand. It is also the part that will tell the backend what the player does, by collecting user input and send that information to the backend, get the result from the backend and then diplay it for the player. 
+Backend translate the puzzels state into ASP facts and runs Clingo. The goal for the solver is to return a full solution or "unsatisfiable". The architecture separates logics (ASP) from presentation (React). 
 
-{\it 
-\begin{itemize}
-  \item Describe the ASP encoding: main predicates, rules, constraints.
-  \item Explain how the ASP part interacts with the ontology/KG (if applicable).
-  \item Explain why ASP is suited for this reasoning.
-\end{itemize} 
-}
+skriv mer om backend lite.
+
+
+\subsection{ASP solver}
+Describe the ASP encoding: 
+\subsubsection{Representation}
+The gameboard it displayed as a 9x9 grid, where each cell is represented as cell(row, column, chainID, value). Row and column then represented by numbers 0..8 and same for chainID. An empty value is represented with a 0, and ... then can have the fixed value 1..9. We have choosen this structure in order to  ...
+\subsubsection{Modeling chains}
+The main difference between a classic sudoku and Strimko is that the classic sudoku has boxes which is 3x3 and Strimko replaces these boxes with 9 "chains". Each chain has exactly 9 cells and assign each (row, column) to each chain identifier. But the principle for chains are the same as boxes and we need to make sure that values 1..9 only appears once in each chain. 
+
+We came across two different ways to implement chains to the ASP. The first one is just the same principle like the classic sudoku. The second one is ... 
+
+\subsubsection{Sudoku constraints}
+each cell has to contain exactly one value/digit. There is row, column and chainID uniqness. given digits are fixed integrity constrainst. 
+... ASP, we dont write search algorithm, instead we write rules that describe the logical constraints of the puzzle. then let the ASP solver (clingo) automatically search for a solution. So we describe the problem and the solver decides the search strategy. The constraints that we write are: a cell must have eactly one digit, a digit cannot be repeated in a row, a digit cannot be repreted in a column, a row cannot be repeated in a chain, given values has to be respected. The solver will then search the entire space of possible assignments, rule out invalid assignments, finds a valid full grid if one exists. We never specify how it searches, in which order, or which value to try first. This is all done by clingo. 
+
+\subsubsection{Why ASP}
+ASP is ideal for constraint satisaction problems. We describe the rules and then the solver handels the search. Stable models correspond to a complete Sudoku solutions.
+
+
+rules: choice rules, om en cell inte är zero, är fylld, 
+
+constraints: vanliga sudoku regler
+
+
+Explain why ASP is suited for this reasoning.
+
+
+
+\subsection{Puzzle Instance Encoding}
+mention the three different puzzle instances with different difficulty levels.
+Players will have the choice between three different levels but the rule files stayes the same for all instances. The instances files contains cell() fact for each positions. chain ID assignements and ... 
+
+\subsection{Hint and Solvability Mechanism}
+Solvability: frontend sends the current grid to ASP, fixing the entired digit. If ASP can produce a model -> puzzle is solvable, if not, the puzzle is unsolvable. 
+Hint system: solves the puzzle completly in ASP, and will compare the solution model with user's current grid. If a cell differs -> do this ... 
+
+\subsection{Interaction Between Frontend and ASP}
+
+
+
 \newpage
 \section{Evaluation}
 
