@@ -60,6 +60,6 @@ chain_connected(R,C,CH) :- filled(R,C,CH,_), filled(R2,C2,CH,_), adjacent(R,C,R2
 
 
 
-#show assign/3. % The assigned cells
+% #show assign/3. % The assigned cells
 #show filled/4. % Show the complete board
 %#show chain_connected/3.
