@@ -5,90 +5,21 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { FaEraser } from "react-icons/fa6";
 import { FaLightbulb } from "react-icons/fa";
-import { useState, type JSX } from "react";
+import { useEffect, useState, type JSX } from "react";
 // Bilden för Easy
-import easy from "../../assets/Easy_Blank.png";
-import { FindInPage } from "@mui/icons-material";
 
-type Cell = {
-  row: number;
-  column: number;
-  init?: number;
-  user?: number;
-};
+import { Easy } from "../../puzzles/Easy_Instance"
+import Easy_Blank from "../../assets/Easy_Blank.png"
 
-// Lista med Easy bräda
+import type { Cell } from "../../puzzles/puzzle";
 
-const Easy: Cell[] = [
-  // Rad 0
-  { row: 0, column: 5, init: 7 },
-  { row: 0, column: 6, init: 6 },
-  { row: 0, column: 7, init: 1 },
 
-  // Rad 1
-  { row: 1, column: 0, init: 5 },
-  { row: 1, column: 1, init: 7 },
-  { row: 1, column: 2, init: 1 },
-  { row: 1, column: 3, init: 2 },
-  { row: 1, column: 4, init: 3 },
-  { row: 1, column: 5, init: 8 },
-  { row: 1, column: 6, init: 9 },
-  { row: 1, column: 7, init: 4 },
+// props interace
+interface propsmainBox {
+  Level_instance?: Cell[]; 
+  backgroundImg?: string;
+}
 
-  // Rad 2
-  { row: 2, column: 1, init: 8 },
-  { row: 2, column: 3, init: 7 },
-  { row: 2, column: 4, init: 4 },
-  { row: 2, column: 5, init: 9 },
-  { row: 2, column: 7, init: 5 },
-
-  // Rad 3
-  { row: 3, column: 0, init: 2 },
-  { row: 3, column: 3, init: 1 },
-  { row: 3, column: 4, init: 6 },
-  { row: 3, column: 6, init: 7 },
-  { row: 3, column: 7, init: 9 },
-  { row: 3, column: 8, init: 8 },
-
-  // Rad 4
-  { row: 4, column: 0, init: 9 },
-  { row: 4, column: 1, init: 6 },
-  { row: 4, column: 2, init: 2 },
-  { row: 4, column: 7, init: 8 },
-
-  // Rad 5
-  { row: 5, column: 0, init: 4 },
-  { row: 5, column: 2, init: 5 },
-  { row: 5, column: 3, init: 8 },
-  { row: 5, column: 5, init: 1 },
-  { row: 5, column: 6, init: 2 },
-  { row: 5, column: 7, init: 6 },
-  { row: 5, column: 8, init: 9 },
-
-  // Rad 6
-  { row: 6, column: 1, init: 9 },
-  { row: 6, column: 4, init: 2 },
-  { row: 6, column: 5, init: 4 },
-  { row: 6, column: 6, init: 3 },
-  { row: 6, column: 8, init: 5 },
-
-  // Rad 7
-  { row: 7, column: 0, init: 7 },
-  { row: 7, column: 1, init: 4 },
-  { row: 7, column: 2, init: 6 },
-  { row: 7, column: 4, init: 8 },
-  { row: 7, column: 5, init: 2 },
-  { row: 7, column: 6, init: 5 },
-  { row: 7, column: 7, init: 3 },
-  { row: 7, column: 8, init: 1 },
-
-  // Rad 8
-  { row: 8, column: 0, init: 3 },
-  { row: 8, column: 2, init: 7 },
-  { row: 8, column: 4, init: 9 },
-  { row: 8, column: 5, init: 6 },
-  { row: 8, column: 7, init: 2 },
-];
 // En funktion skapar en tom bräda där varje cell är av typen Cell
 function createBoard(inti: Cell[]): Cell[] {
   const emptyBoard: Cell[] = [];
@@ -108,10 +39,12 @@ function createBoard(inti: Cell[]): Cell[] {
   return emptyBoard;
 }
 
-
-const MainBox = () => {
+// Gör att det finns default värden 
+const MainBox = ({Level_instance= Easy, backgroundImg= Easy_Blank}: propsmainBox) => {
+  
+  
   // En State som fyller i Bräda i UI
-  const [board, setBoard] = useState<Cell[]>(() => createBoard(Easy));
+  const [board, setBoard] = useState<Cell[]>(() => createBoard(Level_instance));
 
   // State som används för att läsa av vilken cell som användaren trycker på
   const [selected, setSelected] = useState<{
@@ -130,7 +63,7 @@ const MainBox = () => {
     // Först kolla om användaren trycker på en cell
     if(selected) {
       // Hämtar hela raden från listan 
-      const chosenCell = Easy.find(cell => cell.row === selected.row && cell.column === selected.column); 
+      const chosenCell = Level_instance.find(cell => cell.row === selected.row && cell.column === selected.column); 
 
       // om det finns ett objekt i listan med den cellen
       if (chosenCell) {
@@ -138,10 +71,10 @@ const MainBox = () => {
         if(chosenCell.init === undefined ) {
 
           // Ta reda på cellens index
-          const ind = Easy.findIndex(cell => cell.row === selected.row && cell.column === selected.column);
-          Easy.splice(ind, 1)
+          const ind = Level_instance.findIndex(cell => cell.row === selected.row && cell.column === selected.column);
+          Level_instance.splice(ind, 1)
           // Uppdaterar listan 
-          setBoard(createBoard(Easy))
+          setBoard(createBoard(Level_instance))
           return; 
         }
         console.log("Something Wrong 1")
@@ -157,13 +90,13 @@ const MainBox = () => {
     // Först kolla om användern trycker på en cell
     if(selected) {
       // Hämtar hela raden från listan 
-      const chosenCell = Easy.find(cell => cell.row === selected.row && cell.column === selected.column); 
+      const chosenCell = Level_instance.find(cell => cell.row === selected.row && cell.column === selected.column); 
       
       // I Början av spelet innehåller listan endast objekt med init value och då finns inte alla 0 till 80 cellerna  
       if (!chosenCell) {
-        Easy.push({row: selected.row, column: selected.column, user: value});
+        Level_instance.push({row: selected.row, column: selected.column, user: value});
         // Uppdaterar listan 
-        setBoard(createBoard(Easy))
+        setBoard(createBoard(Level_instance))
         return; // Avslutar då
       }
       // Om den raden finns: 
@@ -172,11 +105,11 @@ const MainBox = () => {
         // Kolla om init siffra är undefined (innebär att det är en siffra som användare har skrivit själv)
         if(chosenCell.init === undefined) {
           // Tar reda på indexet för den cellen
-          const cellIndex = Easy.findIndex(cell => cell.row === selected.row && cell.column === selected.column)  
+          const cellIndex = Level_instance.findIndex(cell => cell.row === selected.row && cell.column === selected.column)  
           // Om den är undefined då uppdaterar vi user input av den cellen  
-          Easy[cellIndex].user = value
+          Level_instance[cellIndex].user = value
           // Uppdaterar listan 
-          setBoard(createBoard(Easy))
+          setBoard(createBoard(Level_instance))
           return; // Avslutar då
         } else {
           // skriv i Console att det är en init siffra (i vanliga spel ignoreras detta)
@@ -245,7 +178,7 @@ const MainBox = () => {
               width: "100%",
               maxWidth: 600,
               aspectRatio: "1/1",
-              backgroundImage: `url(${easy})`,
+              backgroundImage: `url(${backgroundImg})`,
               backgroundSize: "contain",
               backgroundRepeat: "no-repeat",
               backgroundPosition: "center",

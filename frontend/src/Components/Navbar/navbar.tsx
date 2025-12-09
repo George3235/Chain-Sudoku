@@ -7,8 +7,27 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { BsGrid3X3GapFill } from "react-icons/bs";
 import { Button } from "@mui/material";
+import {updateLevelState} from "../MainGrid/Game"
 
 const NavAppBar = () => {
+  const [levels, setLevels] = React.useState("Easy")
+  // Om man trycker på Easy Knappen
+  const easyHandler = () => {
+    setLevels("Easy")
+    updateLevelState("Easy")
+  }
+
+  // Om man trycker på medium knappen
+  const mediumHandler = () => {
+    setLevels("Medium")
+    updateLevelState("Medium")
+  }
+
+  // Om man trycker på hard knappen 
+  const hardHandler = () => {
+    setLevels("Hard")
+    updateLevelState("Hard")
+  }
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar
@@ -42,35 +61,38 @@ const NavAppBar = () => {
             >
               Difficulty
             </Typography>
-            <Button size="large" variant="outlined">
+            <Button size="large" variant={levels === "Easy" ? "outlined" : "contained" }>
               <Typography
                 variant="h6"
                 noWrap
                 component="div"
                 sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
                 color="#ffff"
+                onClick={() => easyHandler()}
               >
                 Easy
               </Typography>
             </Button>
-            <Button size="large" variant="contained">
+            <Button size="large" variant = {levels === "Medium" ? "outlined" : "contained"}>
               <Typography
                 variant="h6"
                 noWrap
                 component="div"
                 sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
                 color="#ffff"
+                onClick={() => mediumHandler()}
               >
                 Medium
               </Typography>
             </Button>
-            <Button size="large" variant="contained">
+            <Button size="large" variant= {levels === "Hard" ? "outlined" : "contained"}>
               <Typography
                 variant="h6"
                 noWrap
                 component="div"
                 sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
                 color="#ffff"
+                onClick={() => hardHandler()}
               >
                 Hard
               </Typography>

@@ -11,7 +11,7 @@ createRoot(document.getElementById('root')!).render(
     <Box sx={{ minHeight:"100vh", display:"flex", flexDirection:"column"}}>
       <NavAppBar />
       <Box sx={{flex:1, display:"flex", alignItems: "center", justifyContent:"center"}}>
-        <MainBox/>
+        <MainBox />
       </Box>
     </Box>
     
