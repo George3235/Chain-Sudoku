@@ -52,13 +52,24 @@ class SudokuClass:
         
         for row in grid:
             print(row)
+    
+    # User input from frontend, adds number to current grid
+    def add_number(self):
+        pass
 
+    # Removes number from current grid
+    def remove_number(self):
+        pass
+
+    # Solves the instance using ASP solver
     def solve_sudoku(self):
         pass
 
+    # Validates current grid, if its a correct solution
     def validate_solution(self):
         pass
 
+    # Gives a hint to the user, using ASP
     def give_hint(self):
         pass
 
