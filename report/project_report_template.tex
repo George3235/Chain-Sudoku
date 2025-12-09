@@ -60,34 +60,30 @@ skriv mer om backend lite.
 
 
 \subsection{ASP solver}
-Describe the ASP encoding: 
+!!!! kolla igenom allt och se till så det stämmer överens med det slutliga programmet.
 \subsubsection{Representation}
-The gameboard it displayed as a 9x9 grid, where each cell is represented as cell(row, column, chainID, value). Row and column then represented by numbers 0..8 and same for chainID. An empty value is represented with a 0, and ... then can have the fixed value 1..9. We have choosen this structure in order to  ...
-\subsubsection{Modeling chains}
-The main difference between a classic sudoku and Strimko is that the classic sudoku has boxes which is 3x3 and Strimko replaces these boxes with 9 "chains". Each chain has exactly 9 cells and assign each (row, column) to each chain identifier. But the principle for chains are the same as boxes and we need to make sure that values 1..9 only appears once in each chain. 
 
-We came across two different ways to implement chains to the ASP. The first one is just the same principle like the classic sudoku. The second one is ... 
+The gameboard for Strimko is as mentioned almost the same as the classic Sudoku with a 9x9 grid. Each cell for the game is represented as cell(Row, Column, chainID, Value) in ASP solver. Row and column will be represented by numbers 0..8 and same for chainID. This is done to keep each cells uniqness. While row, column and chainID is repesented by numbers, value is also represented by numbers but has a different meaning. 0 in this case represent a empty cell while 1..9 are the fixed values for Strimko. 
+
+\subsubsection{Modeling chains}
+
+The main difference between a classic Sudoku and Strimko is instead of a 9 boxes which is 3x3, Strimko uses 9 "chains". Each chain has exactly 9 cells and assigned each (Row, Column) to each chain identifier. Eventhough this difference is implemented the principle of the game is the same. For each 9 chains the values 1..9 can only apper once in each chain. 
+
+This approach can be implemented in different ways, and for this project ... 
 
 \subsubsection{Sudoku constraints}
-each cell has to contain exactly one value/digit. There is row, column and chainID uniqness. given digits are fixed integrity constrainst. 
-... ASP, we dont write search algorithm, instead we write rules that describe the logical constraints of the puzzle. then let the ASP solver (clingo) automatically search for a solution. So we describe the problem and the solver decides the search strategy. The constraints that we write are: a cell must have eactly one digit, a digit cannot be repeated in a row, a digit cannot be repreted in a column, a row cannot be repeated in a chain, given values has to be respected. The solver will then search the entire space of possible assignments, rule out invalid assignments, finds a valid full grid if one exists. We never specify how it searches, in which order, or which value to try first. This is all done by clingo. 
+each cell has to contain exactly one value/digit. There is row, column and chainID uniqness. given digits are fixed integrity constrainst. (vet inte hur jag ska få in detta i texten)
+
+
+In ASP, we dont write search algorithm, instead we write rules that describes the logical constraints of the puzzle. Then let the ASP solver (clingo) automatically search for a solution. In order to do this we describe the problem and solver decides the search strategy. The constrainst corresponds to Strimko rules which are: a cell must have exactly one digit, a digit cannot be repeated in a row, a digit cannot be repreted in a column, a row cannot be repeated in a chain, given values has to be respected. The solver will then search the entire space of possible assignements, rules out invalid assignments, finds a valud full grid if one exsits. We never specify how it searches, in which order or which value to try first. Depending on how the user interacts with the game, clingo will handle the rest. 
+
 
 \subsubsection{Why ASP}
-ASP is ideal for constraint satisaction problems. We describe the rules and then the solver handels the search. Stable models correspond to a complete Sudoku solutions.
-
-
-rules: choice rules, om en cell inte är zero, är fylld, 
-
-constraints: vanliga sudoku regler
-
-
-Explain why ASP is suited for this reasoning.
-
-
+ASP is ideal for constraint satisfaction problems. We describe the rules for our problem and then let the solver to handle the search. Stable models correspond to a complete Strimko solution. (skriv mer)
 
 \subsection{Puzzle Instance Encoding}
 mention the three different puzzle instances with different difficulty levels.
-Players will have the choice between three different levels but the rule files stayes the same for all instances. The instances files contains cell() fact for each positions. chain ID assignements and ... 
+The player will have the option to choose between three different difficulty level of Strimko. By default the game will be in easy mode, but it can be switched to medium and hard also. Each level will be implemented as different instances and contains cell() fact for each positions. Chain ID assignements and ... 
 
 \subsection{Hint and Solvability Mechanism}
 Solvability: frontend sends the current grid to ASP, fixing the entired digit. If ASP can produce a model -> puzzle is solvable, if not, the puzzle is unsolvable. 
