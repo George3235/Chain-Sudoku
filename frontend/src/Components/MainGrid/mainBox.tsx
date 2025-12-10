@@ -6,11 +6,6 @@ import Typography from "@mui/material/Typography";
 import { FaEraser } from "react-icons/fa6";
 import { FaLightbulb } from "react-icons/fa";
 import { useEffect, useState, type JSX } from "react";
-// Bilden för Easy
-
-import { Easy } from "../../puzzles/Easy_Instance"
-import Easy_Blank from "../../assets/Easy_Blank.png"
-
 import type { Cell } from "../../puzzles/puzzle";
 
 
