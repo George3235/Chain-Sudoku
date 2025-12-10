@@ -16,8 +16,8 @@ import type { Cell } from "../../puzzles/puzzle";
 
 // props interace
 interface propsmainBox {
-  Level_instance?: Cell[]; 
-  backgroundImg?: string;
+  Level_instance: Cell[]; 
+  backgroundImg: string;
 }
 
 // En funktion skapar en tom bräda där varje cell är av typen Cell
@@ -40,7 +40,7 @@ function createBoard(inti: Cell[]): Cell[] {
 }
 
 // Gör att det finns default värden 
-const MainBox = ({Level_instance= Easy, backgroundImg= Easy_Blank}: propsmainBox) => {
+const MainBox = ({Level_instance, backgroundImg}: propsmainBox) => {
   
   
   // En State som fyller i Bräda i UI

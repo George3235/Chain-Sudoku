@@ -1,14 +1,24 @@
-let level = "Easy"
-export const updateLevelState = (lvl:string) =>  {
+import { Easy } from "../../puzzles/Easy_Instance"
+import { Medium } from "../../puzzles/Medium_Instance"
+import { Hard } from "../../puzzles/Hard_Instance"
+import Easy_Blank from "../../assets/Easy_Blank.png"
+import Medium_Blank from "../../assets/Medium_Blank.png"
+import Hard_Blank from "../../assets/Hard_Blank.png"
+import type { Cell } from "../../puzzles/puzzle"
+
+export type Levels = "Easy" | "Medium" | "Hard"
+
+export interface configLevel {
+    level : Cell [];
+    img : string;
+
+}
+export function updateLevelState (lvl: Levels): configLevel  {
     if (lvl === "Hard") {
-        level = "Hard"
-        // gör att den return Cell[] och länken till BgImage
-        return level
+        return { level: Hard, img: Hard_Blank}
     } else if(lvl === "Medium") {
-        level = "Medium"
-        return level
+        return { level: Medium, img: Medium_Blank}
     } else {
-        level = "Easy"
-        return level
+        return { level: Easy, img: Easy_Blank}
     }
 } 

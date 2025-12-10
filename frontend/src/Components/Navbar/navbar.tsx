@@ -7,26 +7,31 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { BsGrid3X3GapFill } from "react-icons/bs";
 import { Button } from "@mui/material";
-import {updateLevelState} from "../MainGrid/Game"
 
-const NavAppBar = () => {
+import { type Levels} from "../MainGrid/Game"
+
+interface NavProps {
+  onChangeLvl : (lvl: Levels) => void;
+}
+
+const NavAppBar = ({onChangeLvl}:NavProps) => {
   const [levels, setLevels] = React.useState("Easy")
   // Om man trycker på Easy Knappen
   const easyHandler = () => {
     setLevels("Easy")
-    updateLevelState("Easy")
+    onChangeLvl("Easy")
   }
 
   // Om man trycker på medium knappen
   const mediumHandler = () => {
     setLevels("Medium")
-    updateLevelState("Medium")
+    onChangeLvl("Medium")
   }
 
   // Om man trycker på hard knappen 
   const hardHandler = () => {
     setLevels("Hard")
-    updateLevelState("Hard")
+    onChangeLvl("Hard")
   }
   return (
     <Box sx={{ flexGrow: 1 }}>
