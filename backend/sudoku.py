@@ -67,7 +67,8 @@ class SudokuClass:
         return True
 
     # Solves the instance using ASP solver
-    def solve_sudoku(self):
+    # temp is a variable that indicate that it was hint function that is using the function
+    def solve_sudoku(self, temp = False):
 
         # create a clingo control object
         ctl = clingo.Control()
@@ -101,13 +102,34 @@ class SudokuClass:
                     solved_grid[row][col] = val
         
         ctl.solve(on_model=model)
+        if not temp: 
 
-        if not solution_found:
+            if not solution_found:
+                return False
+
+            self.current_grid = [row[:] for row in solved_grid]
+            return True
+        return solved_grid
+    
+    # Gives a hint to the user, using ASP
+    # Input: row, column, difficulty
+    # Output: value in the given position
+    # Måste kolla att det inte är init value där 
+    def give_hint(self, row: int, column: int):
+
+        # Check if the cell is already an hint cell 
+        if self.initial_grid[row][column] != 0:
             return False
+        # Hämtar den rätta lösningen för hela griden
+        solved = self.solve_sudoku(True)
+        # If the value inside that cell is already correct
+        if self.current_grid[row][column] == solved[row][column]:
+            return False
+        # Anger det värdet som användaren är ute efter
+        val = solved[row][column]
+        return val
 
-        self.current_grid = [row[:] for row in solved_grid]
-        return True
-
+    
     # Validates current grid, if its a correct solution
     def validate_solution(self):
         for row in self.current_grid:
@@ -136,10 +158,6 @@ class SudokuClass:
         else:
             return False
         
-    # Gives a hint to the user, using ASP
-    def give_hint(self):
-        pass
-
 
 
 
@@ -147,7 +165,10 @@ class SudokuClass:
 # Chose difficulty
 difficulty = input("easy, medium, hard ? ")
 sudoku = SudokuClass(difficulty)
-
+row_input = int(input("Which row"))
+column_input = int(input("Which column"))
+hint = sudoku.give_hint(row_input,column_input)
+print(f"The hint in row: {row_input} and column: {column_input} is the value {hint}")
 """
 # Testar beccas kod validate_solution & solve_sudoku
 
@@ -168,13 +189,13 @@ if sudoku.solve_sudoku():
     print(f"Löst grid validering: {resultat} (ska vara true)")
 """
 
-print("Value grid:")
-sudoku.print_grid("value")
+#print("Value grid:")
+#sudoku.print_grid("value")
 
-print("\n")
+#print("\n")
 
-print("chain grid:")
-sudoku.print_grid("chain")
+#print("chain grid:")
+#sudoku.print_grid("chain")
 
 
 
