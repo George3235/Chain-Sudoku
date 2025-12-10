@@ -1,4 +1,4 @@
-# import clingo 
+import clingo 
 
 
 # solver_file_path = "../ASP/strimko.lp"
@@ -63,12 +63,74 @@ class SudokuClass:
 
     # Solves the instance using ASP solver
     def solve_sudoku(self):
-        pass
+
+        # create a clingo control object
+        ctl = clingo.Control()
+
+        # load the ASP rules
+        ctl.load("../ASP/strimko.lp")
+
+        # convert current grid to facts for clingo to use
+        for row in range(9):
+            for col in range(9):
+                    chain_id = self.chain_grid[row][col]
+                    val = self.current_grid[row][col]
+                    ctl.add("base", [], f"cell({row},{col},{chain_id},{val}).")
+
+        ctl.ground([("base", [])])
+        
+        solution_found = False
+        solved_grid = [[0 for _ in range(9)] for _ in range(9)]
+
+        def model(model):
+            nonlocal solved_grid, solution_found
+            solution_found = True
+
+            for atom in model.symbols(shown=True):
+                if atom.name == "filled":
+                    args = atom.arguments
+                    row = args[0].number
+                    col = args[1].number
+                    # chain_id = args[2].number
+                    val = args[3].number
+                    solved_grid[row][col] = val
+        
+        ctl.solve(on_model=model)
+
+        if not solution_found:
+            return False
+
+        self.current_grid = [row[:] for row in solved_grid]
+        return True
 
     # Validates current grid, if its a correct solution
     def validate_solution(self):
-        pass
+        for row in self.current_grid:
+            for cell in row:
+                if cell == 0:
+                    return False
+        
+        # create a clingo control object
+        ctl = clingo.Control()
 
+        # load the ASP rules
+        ctl.load("../ASP/strimko.lp")
+
+        for row in range(9):
+            for col in range(9):
+                chain_id = self.chain_grid[row][col]
+                val = self.current_grid[row][col]
+                ctl.add("base", [], f"cell({row},{col},{chain_id},{val}).")
+
+        ctl.ground([("base", [])])
+
+        result = ctl.solve()
+
+        if result.satisfiable:
+            return True
+        else:
+            return False
+        
     # Gives a hint to the user, using ASP
     def give_hint(self):
         pass
