@@ -48,8 +48,8 @@ class SudokuClass:
         if grid_type == "chain":
             grid = self.chain_grid
         else:
-            grid = self.intial_grid
-        
+            grid = self.current_grid
+
         for row in grid:
             print(row)
     
@@ -143,6 +143,25 @@ class SudokuClass:
 difficulty = input("easy, medium, hard ? ")
 sudoku = SudokuClass(difficulty)
 
+"""
+# Testar beccas kod validate_solution & solve_sudoku
+
+print("Initial grid:")
+sudoku.print_grid("value")
+
+# Testa validera på en olöst instans
+print("\n###Test 1 validering på olöst instans, ska returnera false###")
+resultat = sudoku.validate_solution()
+print(f"Ofullständig grid validering: {resultat} (ska vara false)")
+
+# Testa validera på en för hoppningsvis löst grid
+print("\n###Test 2 validering på löst instans, ska returnera true###")
+if sudoku.solve_sudoku():
+    print("Grid löst:")
+    sudoku.print_grid("value")
+    resultat = sudoku.validate_solution()
+    print(f"Löst grid validering: {resultat} (ska vara true)")
+"""
 
 print("Value grid:")
 sudoku.print_grid("value")
