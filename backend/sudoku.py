@@ -21,8 +21,8 @@ class SudokuClass:
     # Constructor, loads instance based on difficulty (easy/medium/hard)
     def __init__(self, difficulty):
         self.difficulty = difficulty
-        self.chain_grid, self.intial_grid = self.load_instance(difficulty)
-        self.current_grid = [row[:] for row in self.intial_grid]
+        self.chain_grid, self.initial_grid = self.load_instance(difficulty)
+        self.current_grid = [row[:] for row in self.initial_grid]
         
     # Loads sudoku instance from appropriate file
     def load_instance(self, difficulty:str):
@@ -47,8 +47,10 @@ class SudokuClass:
     def print_grid(self, grid_type:str):
         if grid_type == "chain":
             grid = self.chain_grid
-        else:
+        elif grid_type == "value":
             grid = self.current_grid
+        elif grid_type == "initvalue":
+            grid = self.initial_grid
 
         for row in grid:
             print(row)
@@ -57,9 +59,12 @@ class SudokuClass:
     def add_number(self):
         pass
 
-    # Removes number from current grid
-    def remove_number(self):
-        pass
+    # Removes number from current grid (only if not part of initial grid)
+    def remove_number(self, row, col):
+        if self.initial_grid[row][col] != 0:
+            return False  # Cannot remove clues
+        self.current_grid[row][col] = 0
+        return True
 
     # Solves the instance using ASP solver
     def solve_sudoku(self):
