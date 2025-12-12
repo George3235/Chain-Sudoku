@@ -56,8 +56,16 @@ class SudokuClass:
             print(row)
     
     # User input from frontend, adds number to current grid
-    def add_number(self):
-        pass
+    def add_number(self, row:int, col:int, number:int):
+        # Cannot modify the hardcoded values
+        solve_grid = self.solve_sudoku(temp=True)
+
+        if solve_grid[row][col] == number:
+            return True
+        else:
+            return False
+
+
 
     # Removes number from current grid (only if not part of initial grid)
     def remove_number(self, row, col):
@@ -109,6 +117,7 @@ class SudokuClass:
 
             self.current_grid = [row[:] for row in solved_grid]
             return True
+        
         return solved_grid
     
     # Gives a hint to the user, using ASP
@@ -163,46 +172,57 @@ class SudokuClass:
 
 
 # Chose difficulty
-difficulty = input("easy, medium, hard ? ")
-sudoku = SudokuClass(difficulty)
-row_input = int(input("Which row"))
-column_input = int(input("Which column"))
-hint = sudoku.give_hint(row_input,column_input)
-print(f"The hint in row: {row_input} and column: {column_input} is the value {hint}")
-"""
-# Testar beccas kod validate_solution & solve_sudoku
+# difficulty = input("easy, medium, hard ? ")
+# sudoku = SudokuClass(difficulty)
 
-print("Initial grid:")
-sudoku.print_grid("value")
+# # row_input = int(input("Which row"))
+# # column_input = int(input("Which column"))
+# # hint = sudoku.give_hint(row_input,column_input)
+# # print(f"The hint in row: {row_input} and column: {column_input} is the value {hint}")
 
-# Testa validera på en olöst instans
-print("\n###Test 1 validering på olöst instans, ska returnera false###")
-resultat = sudoku.validate_solution()
-print(f"Ofullständig grid validering: {resultat} (ska vara false)")
+# # Testar beccas kod validate_solution & solve_sudoku
 
-# Testa validera på en för hoppningsvis löst grid
-print("\n###Test 2 validering på löst instans, ska returnera true###")
-if sudoku.solve_sudoku():
-    print("Grid löst:")
-    sudoku.print_grid("value")
-    resultat = sudoku.validate_solution()
-    print(f"Löst grid validering: {resultat} (ska vara true)")
-"""
+# # print("Initial grid:")
+# # sudoku.print_grid("value")
 
-#print("Value grid:")
-#sudoku.print_grid("value")
+# # # Testa validera på en olöst instans
+# # print("\n###Test 1 validering på olöst instans, ska returnera false###")
+# # resultat = sudoku.validate_solution()
+# # print(f"Ofullständig grid validering: {resultat} (ska vara false)")
 
-#print("\n")
-
-#print("chain grid:")
-#sudoku.print_grid("chain")
+# # # Testa validera på en för hoppningsvis löst grid
+# # print("\n###Test 2 validering på löst instans, ska returnera true###")
+# # if sudoku.solve_sudoku():
+# #     print("Grid löst:")
+# #     sudoku.print_grid("value")
+# #     resultat = sudoku.validate_solution()
+# #     print(f"Löst grid validering: {resultat} (ska vara true)")
 
 
 
 
 
+# ##### Testa att spela spelet i terminalen #####
+# print("Initial grid:")
+# sudoku.print_grid("value")
 
+# while True:
+#     print("\n")
+#     # User input
+#     user_input = input("R,C: ").split(",") # Förväntad input är format: 0,0
+#     row_input = int(user_input[0])
+#     column_input = int(user_input[1])
+#     # Get hint value
+#     value_input = sudoku.give_hint(row_input, column_input)
 
+#     # add number to grid
+#     sudoku.add_number(row_input, column_input, value_input)
 
+#     # Check if solved
+#     if sudoku.validate_solution():
+#         print("Congratulations, you solved the puzzle!")
+#         sudoku.print_grid("value")
+#         break
 
-
+#     # Print current grid and continue
+#     sudoku.print_grid("value")

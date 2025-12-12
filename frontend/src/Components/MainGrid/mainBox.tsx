@@ -27,7 +27,7 @@ function createBoard(inti: Cell[]): Cell[] {
       }
       // Om initial value ej finns
       else {
-        emptyBoard.push({ row, column });
+        emptyBoard.push({ row, column, init:0});
       }
     }
   }
@@ -139,6 +139,7 @@ const MainBox = ({Level_instance, backgroundImg}: propsmainBox) => {
               selected && selected.row === row && selected.column === column
                 ? "rgba(255,255,255,0.15)"
                 : "transparent",
+              color: cell?.init ? "#ffffff" : "#008Cff",
           }}
           //onClick={() => setSelected({ row, column })}
           onClick= {()=> cellOnclick(row, column)}
