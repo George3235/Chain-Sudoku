@@ -2,6 +2,8 @@
 \usepackage{enumitem}
 \usepackage{xcolor}
 \usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{subcaption}
 
 %configure options for the hyperref package,
 %which is used to add hyperlinks to documents
@@ -32,12 +34,16 @@ nomarginpar,% We don't want any margin paragraphs
 \fancyhead[C]{} % center header
 \fancyhead[R]{\thepage} % right header
 
-\title{Sudoku Game with ASP-based Hint System}
+\title{Chain Sudoku Game with ASP-based Hint System}
 \author{Emil Fröding, Erik Wöhry, George Saba, Rebecca Huynh}
 %\date{}
 \begin{document}
 
 \maketitle  % This command generates the title
+\begin{figure} [h]
+  \includegraphics[width=\linewidth]{image/JU_logos/JU_A_gra_cmyk_72.png}
+\end{figure}
+
 \newpage
 \section{Introduction and Movivation}
 
@@ -46,6 +52,38 @@ nomarginpar,% We don't want any margin paragraphs
  lägg till varning om man har placerat ut något fel. 
 
 The aim of this project is to demonstrate how Answer Set Programming can be used to analyze puzzle states, detect unsolvable solution, and generate hints during gameplay. We will implement an interactive version of Chain Sudoku, also known as Strimko, supported by an ASP-based reasoning component. In Chain sudoku, the traditional 3x3 boxes are replaced by nine irregular "chains", each of which must contain the digits 1-9 exactly once. This gives us a great opportunity to adapt the standard Sudoku encoding and show how ASP can flexibly capture alternative constraint structures. This project will also feature a simple React frontend to accomplish the interactive part. By forwarding the player's current entries to the ASP solver. The frontend is intentionally minimal: it does not validate each move, enforce Sudoku rules during input, or allow penciling notes, as the focus is on the reasoning capabilities rather than interface complexity. The solver will evaluate whether the puzzle remains solvable based on the player's inputs and can provide hints by computing a valid completed solution. 
+
+\newpage 
+To illustrate how chain sudoku (Strimko) works and looks. See the appended figures below:
+% Behöver refrence till att bilderna är tagna från
+% https://sudoku-puzzles.net/
+\begin{figure}[h!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=\linewidth]{image/sudoku_instance.png}
+    \caption{Unsolved sudoku instance.}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=\linewidth]{image/sudoku_instance_solved.png}
+    \caption{Solved sudoku.}
+  \end{subfigure}
+  \caption{}
+  \label{fig:sudoku}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=\linewidth]{image/strimko_instance.png}
+    \caption{Unsolved strimko instance.}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\linewidth}
+    \includegraphics[width=\linewidth]{image/strimko_instance_solved.png}
+    \caption{Solved strimko.}
+  \end{subfigure}
+  \caption{}
+  \label{fig:strimko}
+\end{figure}
 
 \newpage
 \section{Methodology}
