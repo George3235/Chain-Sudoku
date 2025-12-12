@@ -5,14 +5,18 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { FaEraser } from "react-icons/fa6";
 import { FaLightbulb } from "react-icons/fa";
-import { useEffect, useState, type JSX } from "react";
+import {  useState, type JSX } from "react";
 import type { Cell } from "../../puzzles/puzzle";
+import type { Levels } from "./Game";
 
+// API imports
+import {remove_number_req, add_number_req, give_hint_req} from "../../services/util"
 
 // props interace
 interface propsmainBox {
   Level_instance: Cell[]; 
   backgroundImg: string;
+  difficulty: Levels;
 }
 
 // En funktion skapar en tom bräda där varje cell är av typen Cell
@@ -27,7 +31,7 @@ function createBoard(inti: Cell[]): Cell[] {
       }
       // Om initial value ej finns
       else {
-        emptyBoard.push({ row, column, init:0});
+        emptyBoard.push({ row, column });
       }
     }
   }
@@ -35,7 +39,7 @@ function createBoard(inti: Cell[]): Cell[] {
 }
 
 // Gör att det finns default värden 
-const MainBox = ({Level_instance, backgroundImg}: propsmainBox) => {
+const MainBox = ({Level_instance, backgroundImg, difficulty}: propsmainBox) => {
   
   
   // En State som fyller i Bräda i UI
@@ -53,8 +57,30 @@ const MainBox = ({Level_instance, backgroundImg}: propsmainBox) => {
     setSelected({row,column })
   }
 
+  // Funktionen som hanterar när användaren vill ha en ledtråd för en cell
+  const hintHandler = async() => {
+    // Först kolla ifall användaren trycker på en cell
+    if (selected) {
+      // Hämtar hela raden från listan 
+      //const chosenCell = Level_instance.find(cell => cell.row === selected.row && cell.column === selected.column); 
+      const api_req_give_hint = await give_hint_req(selected.row, selected.column, difficulty);
+
+      if ( api_req_give_hint != "0" ){
+        console.log("Inne i andra början")
+        Level_instance.push({row: selected.row, column: selected.column, user: Number(api_req_give_hint)});
+        // Uppdaterar listan 
+        setBoard(createBoard(Level_instance))
+        console.log("Inne i andra slutet")
+        return;
+      }
+      else {
+        return;
+      }
+    }
+  }
+
   // Funktion som hanterar om användaren vill ta bort ett värde från en lägg
-  const deleteHandler = () => {
+  const deleteHandler = async() => {
     // Först kolla om användaren trycker på en cell
     if(selected) {
       // Hämtar hela raden från listan 
@@ -63,15 +89,20 @@ const MainBox = ({Level_instance, backgroundImg}: propsmainBox) => {
       // om det finns ett objekt i listan med den cellen
       if (chosenCell) {
         // Kolla så att dess init är undefined 
-        if(chosenCell.init === undefined ) {
-
-          // Ta reda på cellens index
-          const ind = Level_instance.findIndex(cell => cell.row === selected.row && cell.column === selected.column);
-          Level_instance.splice(ind, 1)
-          // Uppdaterar listan 
-          setBoard(createBoard(Level_instance))
-          return; 
+        const api_req_remove = await remove_number_req(selected.row, selected.column, difficulty);
+        if(!api_req_remove) {
+          console.log("Du kan inte ta bort init din åsna")
+          return
         }
+        
+
+        // Ta reda på cellens index
+        const ind = Level_instance.findIndex(cell => cell.row === selected.row && cell.column === selected.column);
+        Level_instance.splice(ind, 1)
+        // Uppdaterar listan 
+        setBoard(createBoard(Level_instance))
+        return; 
+        
         console.log("Something Wrong 1")
       } 
       console.log("Something Wrong 2")
@@ -80,25 +111,32 @@ const MainBox = ({Level_instance, backgroundImg}: propsmainBox) => {
   }
 
   // Funktionen som hanterar om man trycker på en cell och en siffra samtidigt => Lägg till den siffran i den cellen. 
-  const handlePressNumber = (value: number) => {
+  const handlePressNumber = async (value: number) => {
     
     // Först kolla om användern trycker på en cell
     if(selected) {
+      console.log("Inne i första början")
       // Hämtar hela raden från listan 
       const chosenCell = Level_instance.find(cell => cell.row === selected.row && cell.column === selected.column); 
-      
+      // Om den är True så ska man lägga till siffran annars nooo (Eller annat)
+      const api_req_add = await add_number_req(selected.row, selected.column, value,difficulty);
       // I Början av spelet innehåller listan endast objekt med init value och då finns inte alla 0 till 80 cellerna  
-      if (!chosenCell) {
+      console.log("Inne i första hämtat API")
+      console.log(api_req_add)
+      if ((!chosenCell )&& !api_req_add) {
+        console.log("Inne i andra början")
         Level_instance.push({row: selected.row, column: selected.column, user: value});
         // Uppdaterar listan 
         setBoard(createBoard(Level_instance))
+        console.log("Inne i andra slutet")
         return; // Avslutar då
       }
       // Om den raden finns: 
       else if(chosenCell) {
-
+        const api_req_add_redan = await add_number_req(selected.row, selected.column, value,difficulty);
+        console.log("Inne i else if början")
         // Kolla om init siffra är undefined (innebär att det är en siffra som användare har skrivit själv)
-        if(chosenCell.init === undefined) {
+        if(!api_req_add_redan) {
           // Tar reda på indexet för den cellen
           const cellIndex = Level_instance.findIndex(cell => cell.row === selected.row && cell.column === selected.column)  
           // Om den är undefined då uppdaterar vi user input av den cellen  
@@ -139,7 +177,6 @@ const MainBox = ({Level_instance, backgroundImg}: propsmainBox) => {
               selected && selected.row === row && selected.column === column
                 ? "rgba(255,255,255,0.15)"
                 : "transparent",
-              color: cell?.init ? "#ffffff" : "#008Cff",
           }}
           //onClick={() => setSelected({ row, column })}
           onClick= {()=> cellOnclick(row, column)}
@@ -311,7 +348,7 @@ const MainBox = ({Level_instance, backgroundImg}: propsmainBox) => {
                 <Button size="large" sx={{ borderRadius: 25 }} onClick={() => deleteHandler()}>
                   <FaEraser size={70} />
                 </Button>
-                <Button size="large" sx={{ borderRadius: 25 }}>
+                <Button size="large" sx={{ borderRadius: 25 }} onClick={() => hintHandler()}>
                   <FaLightbulb size={70} />
                 </Button>
               </Box>

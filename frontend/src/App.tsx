@@ -12,7 +12,7 @@ function App() {
     <Box sx={{ minHeight:"100vh", display:"flex", flexDirection:"column"}}>
       <NavAppBar onChangeLvl={(newLVL: Levels ) => setLeveltitle(newLVL)} />
       <Box sx={{flex:1, display:"flex", alignItems: "center", justifyContent:"center"}}>
-        <MainBox Level_instance={level} backgroundImg= {img} key={leveltitle}/>
+        <MainBox Level_instance={level} backgroundImg= {img} difficulty={leveltitle} key={leveltitle}/>
       </Box>
     </Box>
   );

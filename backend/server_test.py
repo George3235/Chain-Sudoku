@@ -1,7 +1,8 @@
 from flask import Flask, request
 from sudoku import SudokuClass
-
+from flask_cors import CORS
 app = Flask(__name__)
+CORS(app)
 
 
 @app.route("/move", methods=["POST"])
@@ -26,9 +27,10 @@ def give_hint():
 
     sudoku_class = SudokuClass(dif)
     value = sudoku_class.give_hint(row,col)
-
-    if not value:
-        return "du är dumm", 200
+    # Om siffran är init siffra
+    # Return 0
+    if value == 0:
+        return f"0", 200
     
     return f"{value}", 200
 

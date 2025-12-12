@@ -19,14 +19,14 @@ import clingo
 # Sudoku Class that handles a sudoku instance
 class SudokuClass:
     # Constructor, loads instance based on difficulty (easy/medium/hard)
-    def __init__(self, difficulty):
-        self.difficulty = difficulty
-        self.chain_grid, self.initial_grid = self.load_instance(difficulty)
+    def __init__(self, difficulty:str):
+        self.difficulty = difficulty.lower()
+        self.chain_grid, self.initial_grid = self.load_instance(difficulty.lower())
         self.current_grid = [row[:] for row in self.initial_grid]
         
     # Loads sudoku instance from appropriate file
     def load_instance(self, difficulty:str):
-        instance_file_path = f"../ASP/instances/sudoku_{difficulty}_instance.lp"
+        instance_file_path = f"../ASP/instances/sudoku_{difficulty.lower()}_instance.lp"
         grid = [[0 for col in range(9)] for row in range(9)]
         chain_grid = [[0 for col in range(9)] for row in range(9)]
 
@@ -124,16 +124,17 @@ class SudokuClass:
     # Input: row, column, difficulty
     # Output: value in the given position
     # Måste kolla att det inte är init value där 
-    def give_hint(self, row: int, column: int):
+    # Return 0 innebär det att det redan är rätt 
+    def give_hint(self, row: int, column: int) -> int:
 
         # Check if the cell is already an hint cell 
         if self.initial_grid[row][column] != 0:
-            return False
+            return 0
         # Hämtar den rätta lösningen för hela griden
         solved = self.solve_sudoku(True)
         # If the value inside that cell is already correct
         if self.current_grid[row][column] == solved[row][column]:
-            return False
+            return 0
         # Anger det värdet som användaren är ute efter
         val = solved[row][column]
         return val
