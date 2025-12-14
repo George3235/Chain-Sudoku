@@ -123,20 +123,17 @@ We built our ASP instances using facts of the cell predicate. We had 3 instances
 One of our ambitions was to generate solved instances and cherry pick cells to delete while holding the instance to only one unique solution. This would then be our initial grid for the user to solve. However this turned out to be a hard challenge due to the chains which would have to be generated for each instance aswell. We made the desicion to not generate our own instances due the time constraint, but rather to download and hardcode them instead. The chain grids were then photoshopped to fit our representation. 
 
 \subsubsection{Strimko constraints, rules and predicates}
-In answer set programming, rules are declared that describes the logical constraints of the problem. We let clingo search for a solution to the puzzle based on these. In order to do this we describe the problem and the solver decides the search strategy. The constrainst corresponds to Strimko rules which are: each cell has to contain exactly one value. There is row, column and chain uniqness. Given clues for each instance are facts.  The solver will then search the entire space of possible assignments, rules out invalid assignments, finds a valid full grid if one exsits. 
-
-The predicates that are declared for our solution are listed below:
+The constrainst corresponds to Strimko rules. Given clues for each instance are facts declared in the instance difficulty files. The clingo solver will then search the entire space of possible assignments, rules out invalid assignments based on constraints, and finds a valid full grid if one exsits. The predicates that are declared for our solution are listed below:
 
 \begin{itemize}
   \item \textbf{cell/4} - Input predicate from instance files.
   \item \textbf{row/1, col/1, val/1} - Domain predicates, valid index and values.
-  \item \textbf{filled/4} - Cells that have a value, could be a clue or just some assigned value.
+  \item \textbf{filled/4} - Cells that have a value, could be a clue or just an assigned value.
   \item \textbf{adjacent/4} - Relative cell adjacency, horizontal, vertical and diagonals with symmetry.
   \item \textbf{chain\_connected/3} - Chains connect only adjacent cells.
 \end{itemize}
 
-Choice rules help describe that for each empty cell, we assign only one value from \textbf{val}. In the ASP solution, empty cells are represented with value 0.
-
+Choice rules help describe that for each empty cell, we assign only one value from \textbf{val}. In the ASP solution, empty cells are represented with value 0. Integrity constraints enforce the uniqueness which is fundamental in sudoku based variants of the game. 
 
 \subsubsection{Why ASP}
 ASP is ideal for constraint satisfaction problems. We describe the rules for our problem and then let the solver to handle the search. Stable models correspond to a complete Strimko solution. (skriv mer)
