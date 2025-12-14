@@ -4,6 +4,7 @@
 \usepackage{fancyhdr}
 \usepackage{graphicx}
 \usepackage{subcaption}
+% \usepackage{parskip} gör mellanslag i tex även i pdf
 
 %configure options for the hyperref package,
 %which is used to add hyperlinks to documents
@@ -49,15 +50,13 @@ nomarginpar,% We don't want any margin paragraphs
 \newpage
 \section{Introduction and Movivation}
 
- note: Clearly define the scope of your project (what you cover, what you do not). inte klar, första layout
+% note: Clearly define the scope of your project (what you cover, what you do not). inte klar, första layout
 
- lägg till varning om man har placerat ut något fel. 
+% lägg till varning om man har placerat ut något fel. 
 
-The aim of this project is to demonstrate how Answer Set Programming can be used to analyze puzzle states, detect unsolvable solution, and generate hints during gameplay. We will implement an interactive version of Chain Sudoku, also known as Strimko, supported by an ASP-based reasoning component. In Chain sudoku, the traditional 3x3 boxes are replaced by nine irregular "chains", each of which must contain the digits 1-9 exactly once. This gives us a great opportunity to adapt the standard Sudoku encoding and show how ASP can flexibly capture alternative constraint structures. This project will also feature a simple React frontend to accomplish the interactive part. By forwarding the player's current entries to the ASP solver. The frontend is intentionally minimal: it does not validate each move, enforce Sudoku rules during input, or allow penciling notes, as the focus is on the reasoning capabilities rather than interface complexity. The solver will evaluate whether the puzzle remains solvable based on the player's inputs and can provide hints by computing a valid completed solution. 
+The aim of this project is to demonstrate how Answer Set Programming can be used to analyze and detect unsolvable puzzle states and generate hints during gameplay. We will implement an interactive version of Chain Sudoku, also known as Strimko, supported by an ASP-based reasoning component. In Chain sudoku, the traditional 3x3 boxes are replaced by nine irregular chains, each of which must contain the digits 1-9 exactly once. This gives us a great opportunity to adapt the standard Sudoku encoding and show how ASP can flexibly capture alternative constraint structures. This project will also feature a React frontend to accomplish the interactive part. By forwarding the player's current entries to the ASP solver. The frontend is intentionally minimal: it does not validate each move or enforce Sudoku rules during input, as the focus is on the reasoning capabilities rather than interface complexity. The solver will evaluate whether the puzzle remains solvable based on the player's inputs and can provide hints by computing a valid completed solution to compare with. 
 
-\newpage 
-To illustrate how chain sudoku (Strimko) works and looks. See the appended figures below:
-% Behöver refrence till att bilderna är tagna från
+To illustrate how chain sudoku (strimko) works and looks. We have downloaded example grids with solved and unsolved solutions of sudoku (figure \ref{fig:sudoku}) and strimko (figure \ref{fig:strimko}) to see and compare them side by side. See the appended figures below:
 % https://sudoku-puzzles.net/
 \begin{figure}[h!]
   \centering
@@ -72,6 +71,8 @@ To illustrate how chain sudoku (Strimko) works and looks. See the appended figur
   \caption{Sudoku examples used in this report (source: \cite{puzzlesnet}).}
   \label{fig:sudoku}
 \end{figure}
+
+\newpage
 
 \begin{figure}[h!]
   \centering
@@ -91,25 +92,39 @@ To illustrate how chain sudoku (Strimko) works and looks. See the appended figur
 \section{Methodology}
 
 \subsection{System Overview}
-react frontend, backend ASP solver (clingo), a communication layer that sends the current grid as facts to ASP, ASP returns a solution (if solvable) or no solution
+%react frontend, backend ASP solver (clingo), a communication layer that sends the current grid as facts to ASP, ASP returns a solution (if solvable) or no solution
 
-This project is build on a frontend and backend. Frontend is done with React, and the focus it to create in interactive view and easy to understand. It is also the part that will tell the backend what the player does, by collecting user input and send that information to the backend, get the result from the backend and then diplay it for the player. 
-Backend translate the puzzels state into ASP facts and runs Clingo. The goal for the solver is to return a full solution or "unsatisfiable". The architecture separates logics (ASP) from presentation (React). 
+This project is built with 3 core components: frontend, backend and ASP. Frontend is done with React, and the focus is to create in interactive view and easy to understand. It is also the part that will tell the backend what the player does, by collecting user input and send that information to the backend, get the result from the backend and then diplay it for the player. This communication done with Flask API.
+Backend instanciates the sudokuClass and calls Clingo API which runs the ASP solver. The goal for the solver is to return a full solution or "unsatisfiable". The architecture separates ASP logics from React presentation. Below is an overview of the core system components:
 
-skriv mer om backend lite.
+% ska vi ha källor till Clingo API, React/MUI och Flask?
+
+\begin{figure} [h!]
+  \includegraphics[width=\linewidth]{image/diagram.png}
+  \caption{System overview}
+\end{figure}
 
 
-\subsection{ASP solver}
-!!!! kolla igenom allt och se till så det stämmer överens med det slutliga programmet.
+\subsection{ASP solution}
+% bla bla bla 
 \subsubsection{Representation}
 
-The gameboard for Strimko is as mentioned almost the same as the classic Sudoku with a 9x9 grid. Each cell for the game is represented as cell(Row, Column, chainID, Value) in ASP solver. Row and column will be represented by numbers 0..8 and same for chainID. This is done to keep each cells uniqness. While row, column and chainID is repesented by numbers, value is also represented by numbers but has a different meaning. 0 in this case represent a empty cell while 1..9 are the fixed values for Strimko. 
+The gameboard for Strimko is as mentioned almost the same as the classic Sudoku with a 9x9 grid. Each cell for the game is represented as cell(Row, Column, chainID, Value) in ASP solver. Rows and columns are represented with numbers 0..8 and same for chainID. This is done to keep each cells uniqness. While row, column and chainID are repesented by numbers, value is also represented by numbers but has a different meaning. 0 in this case represent a empty cell while 1..9 are the fixed values for Strimko. 
+
+% skriva om Predicates i asp lösningen; filled, assigned & cell och chain_connected.
 
 \subsubsection{Modeling chains}
 
-The main difference between a classic Sudoku and Strimko is instead of a 9 boxes which is 3x3, Strimko uses 9 "chains". Each chain has exactly 9 cells and assigned each (Row, Column) to each chain identifier. Eventhough this difference is implemented the principle of the game is the same. For each 9 chains the values 1..9 can only apper once in each chain. 
+As mentioned above, the main difference between a classic Sudoku and Strimko is instead of a 9 boxes which are 3x3, Strimko uses 9 chains. Each chain has exactly 9 cells and assigned each (Row, Column) to each chain identifier. Eventhough this difference is implemented, the principle of the game is the same. For each 9 chains the values 1..9 can only appear once in each chain. 
 
-This approach can be implemented in different ways, and for this project ... 
+% inspiration från dominosa med grannliggande celler. 
+To model the chain constraint, we took inspiration from the dominosa puzzle where numbers are paired. For 2 numbers to be paired, they also have to be neighbours to eachother. This is similar to our solution, which involves connecting neighbouring cells that are in the same chain. Below is an image of a solved dominosa puzzle to illustrate. It was downloaded from \textit{Lab: Knowledge-Driven Problem Solving with ASP} task instructions.
+
+\begin{figure} [h!]
+  \includegraphics[width=0.4\linewidth]{image/dominosa_small_solved.png}
+  \centering
+  \caption{Small solved dominosa puzzle instance.}
+\end{figure}
 
 \subsubsection{Sudoku constraints}
 each cell has to contain exactly one value/digit. There is row, column and chainID uniqness. given digits are fixed integrity constrainst. (vet inte hur jag ska få in detta i texten)
