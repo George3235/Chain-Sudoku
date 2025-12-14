@@ -126,6 +126,14 @@ To model the chain constraint, we took inspiration from the dominosa puzzle wher
   \caption{Small solved dominosa puzzle instance.}
 \end{figure}
 
+\subsubsection{Strimko instances}
+We built our ASP instances using facts of the cell predicate. We had 3 instances which we downloaded from \cite{puzzlesnet}. The instances concluded one of each difficulty level: easy, medium and hard. Essentially, the instances are all 9x9 in size, so only the amount of clues varies. 
+
+% Vi laddade ner våra instanser från https://sudoku-puzzles.net/ 
+% Vi märkte ganska fort att det skulle bli för mke arbete att skapa egna instanser på grund av hur vi skulle visa chains, så vi använde photoshop för det på frontenden. 
+% detta kanske inte passar in här?
+One of our ambitions was to generate solved instances and cherry pick cells to delete while holding the instance to only one unique solution. This would then be our initial grid for the user to solve. However this turned out to be a hard challenge due to the chains which would have to be generated for each instance aswell. We made the desicion to not generate our own instances due the time constraint, but rather to download and hardcode them instead. The chain grids were then photoshopped to fit our representation. 
+
 \subsubsection{Sudoku constraints}
 each cell has to contain exactly one value/digit. There is row, column and chainID uniqness. given digits are fixed integrity constrainst. (vet inte hur jag ska få in detta i texten)
 
@@ -136,19 +144,9 @@ In ASP, we dont write search algorithm, instead we write rules that describes th
 \subsubsection{Why ASP}
 ASP is ideal for constraint satisfaction problems. We describe the rules for our problem and then let the solver to handle the search. Stable models correspond to a complete Strimko solution. (skriv mer)
 
-\subsection{Puzzle Instance Encoding}
-mention the three different puzzle instances with different difficulty levels.
-The player will have the option to choose between three different difficulty level of Strimko. By default the game will be in easy mode, but it can be switched to medium and hard also. Each level will be implemented as different instances and contains cell() fact for each positions. Chain ID assignements and ... 
-
 \subsection{Hint and Solvability Mechanism}
 Solvability: frontend sends the current grid to ASP, fixing the entired digit. If ASP can produce a model -> puzzle is solvable, if not, the puzzle is unsolvable. 
 Hint system: solves the puzzle completly in ASP, and will compare the solution model with user's current grid. If a cell differs -> do this ... 
-
-\subsection{Interaction Between Frontend, Backend and ASP}
-frontend: react
-backend: python
-ASP: clingo
-
 
 \newpage
 \section{Evaluation}
@@ -157,10 +155,10 @@ ASP: clingo
 
 The game is based on three instances which we know is solvable and therefore can check if the solver does a correct job. 
 If the project would have been creating its own gameboard, a checkout process should be implementent in order to check whether the created gameboard is solvable. But for our case, we take already solvable instances and create instances files which the frontend compunicates to the backend on which difficulty level the player has choosen in which the ASP solver then will base its search on.
-Solvers runtime is ... 
-The hint correctness is ... 
-Solvability check behaviour ... 
-limmitations and issues discovered ... 
+%Solvers runtime is ... 
+%The hint correctness is ... 
+%Solvability check behaviour ... 
+%limmitations and issues discovered ... 
 \newpage
 \section{Discussion and Conclusion}
 
