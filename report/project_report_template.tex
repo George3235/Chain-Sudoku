@@ -136,11 +136,21 @@ The constrainst corresponds to Strimko rules. Given clues for each instance are 
 Choice rules help describe that for each empty cell, we assign only one value from \textbf{val}. In the ASP solution, empty cells are represented with value 0. Integrity constraints enforce the uniqueness which is fundamental in sudoku based variants of the game. 
 
 \subsubsection{Why ASP}
-ASP is ideal for constraint satisfaction problems. We describe the rules for our problem and then let the solver to handle the search. Stable models correspond to a complete Strimko solution. (skriv mer)
+ASP is ideal for constraint satisfaction problems. Using the guess and check paradigm, we can with ease guess solutions for Sudoko/Strimko and prune away invalid solutions. 
+Another advantage of using ASP for this problem, is its simplicity and the extendability.
+Using ASP, we can modify the rules and constraint to fit other variants of Sudoku without changing the overall structure of the program.
+An application can reuse a generic ASP sudoku solver while integrating different variation of the puzzle. 
+This could be done by inserting new rules and constraints via the Clingo API.
+Furthermore, the search algorithm for finding a solution is abstracted away which saves development time.
+The developer simple describes the rules and constraints and then let the solver handle the search efficiently.
 
 \subsection{Hint and Solvability Mechanism}
-Solvability: frontend sends the current grid to ASP, fixing the entired digit. If ASP can produce a model -> puzzle is solvable, if not, the puzzle is unsolvable. 
-Hint system: solves the puzzle completly in ASP, and will compare the solution model with user's current grid. If a cell differs -> do this ... 
+Solvability: When checking for solvability, we insert the current grid as facts into the ASP solver and check for (unsatisfiable / satisfiable).
+            If the model output is unsatisfiable, we know that at least one cell value is incorrect. Therefore the puzzle is unsolvable from the current state.
+            When the puzzle is completed correctly, the user are alerted that the puzzle is correctly solved. 
+
+Hint system: The hint system is primitive, the user is given the correct value for a cell of their choosing.
+Frontend sends request for chosen (row,col), ASP solver solves the problem instance and returns the correct value to the user. 
 
 \newpage
 \section{Evaluation}
