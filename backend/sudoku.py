@@ -58,12 +58,17 @@ class SudokuClass:
     # User input from frontend, adds number to current grid
     def add_number(self, row:int, col:int, number:int):
         # Cannot modify the hardcoded values
-        solve_grid = self.solve_sudoku(temp=True)
+        if self.initial_grid[row][col] != 0:
+            return False 
+        
+        self.current_grid[row][col] = number
+        return True
+        #solve_grid = self.solve_sudoku(temp=True)
 
-        if solve_grid[row][col] == number:
-            return True
-        else:
-            return False
+        #if solve_grid[row][col] == number:
+        #    return True
+        #else:
+        #    return False
 
 
 

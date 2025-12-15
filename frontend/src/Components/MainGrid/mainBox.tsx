@@ -123,7 +123,7 @@ const MainBox = ({Level_instance, backgroundImg, difficulty}: propsmainBox) => {
       // I Början av spelet innehåller listan endast objekt med init value och då finns inte alla 0 till 80 cellerna  
       console.log("Inne i första hämtat API")
       console.log(api_req_add)
-      if ((!chosenCell )&& !api_req_add) {
+      if ((!chosenCell )&& api_req_add) {
         console.log("Inne i andra början")
         Level_instance.push({row: selected.row, column: selected.column, user: value});
         // Uppdaterar listan 
@@ -136,7 +136,7 @@ const MainBox = ({Level_instance, backgroundImg, difficulty}: propsmainBox) => {
         const api_req_add_redan = await add_number_req(selected.row, selected.column, value,difficulty);
         console.log("Inne i else if början")
         // Kolla om init siffra är undefined (innebär att det är en siffra som användare har skrivit själv)
-        if(!api_req_add_redan) {
+        if(api_req_add_redan) {
           // Tar reda på indexet för den cellen
           const cellIndex = Level_instance.findIndex(cell => cell.row === selected.row && cell.column === selected.column)  
           // Om den är undefined då uppdaterar vi user input av den cellen  
