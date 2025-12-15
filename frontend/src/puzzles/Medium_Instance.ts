@@ -12,8 +12,8 @@ export const Medium: Cell [] = [
     {row:1, column:6, init:3},
     // Rad 2
     {row:2, column:0, init:8},
-    {row:1, column:5, init:5},
-    {row:1, column:7, init:6},
+    {row:2, column:5, init:5},
+    {row:2, column:7, init:6},
     // Rad 3 
     {row:3, column:0, init:5},
     {row:3, column:2, init:4},
