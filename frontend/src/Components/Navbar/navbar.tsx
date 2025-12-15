@@ -40,7 +40,7 @@ const NavAppBar = ({onChangeLvl}:NavProps) => {
         sx={{
           backgroundColor: "#212529ff", // Navbar Bakgrund färgen
           boxShadow: "none", // För att ta bort skuggan
-          height:"5vh"
+          height:"10vh"
         }}
       >
         <Toolbar sx={{height:"10vh"}}>

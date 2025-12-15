@@ -198,7 +198,7 @@ const MainBox = ({Level_instance, backgroundImg, difficulty}: propsmainBox) => {
   return (
     <Container
       maxWidth="xl"
-      sx={{ backgroundColor: "#363d44ff", height: "75vh" }}
+      sx={{ backgroundColor: "#363d44ff", height: "100%" }}
     >
       {/*Definerar områden för Själva Cirklarna grid och allt annat */}
       <Grid container sx={{ height: "100%" }}>
