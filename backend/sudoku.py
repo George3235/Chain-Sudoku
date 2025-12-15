@@ -75,7 +75,7 @@ class SudokuClass:
         return True
 
     # Solves the instance using ASP solver
-    # temp is a variable that indicate that it was hint function that is using the function
+    # temp is a variable that indicate that it was another function that is using this function
     def solve_sudoku(self, temp = False):
 
         # create a clingo control object

@@ -165,13 +165,15 @@ If the project would have been creating its own gameboard, a checkout process sh
 %limmitations and issues discovered ... 
 \newpage
 \section{Discussion and Conclusion}
-
-{\it
-\begin{itemize}
-  \item Discuss the strengths and limitations of your approach.
-  \item What did you learn about combining symbolic and data-driven AI?
-\end{itemize}
-}
+There are several strengths of our approach that we chose for this application. First and foremost was the use of Answer Set Programming to ensure that the rules are always met. Sudoku is a pure constraint satisfaction problem with rules that are clearly defined and are non-negotiable, thus ASP is most suitable for that game.
+\\ Another strength of our approach is the ASP encoding. It is not hard-coded to be used only for Chain Sudoku, but can also be reused for other variants of the game. You may need to modify the constraints to fit the other variants but the general architecture remains the same.
+\\ The last main strength is the modularity, the game is implemented in a way that allows changes to the components without affecting the performance of the other parts. If you change the UI part, it would not affect the underlying logic as the modularity makes them independent of each other and vice versa. This leads to a simplification of the scalability of the game itself. \\
+\linebreak The game has a built-in hint system which can be seen as a limitation. Since it is developed in such a way that it only generates the correct value for the cell that the user selects, without any explanation as to why that value is the correct one. This is a limitation as the user does not get a tactical hint that can facilitate the solution of the puzzle.
+\\ Another limitation is that the game does not have an algorithm that automatically generates new instances of the grid. The game contains only three different hard-coded examples, one for each level. This in turn leads to the game being adapted for demo purposes and not ready for the user to play it.
+\\ The game's performance is also a limitation in itself, this is because the underlying logic of the game is structured in such a way that the entire puzzle must be solved every time a new input/hint is requested. This means that the game can be experienced slower than expected. \\
+\linebreak
+We have learned a lot about combining symbolic and data-driven AI. First of all, when it is best to use Answer Set Programming and that is when you have constraint satisfaction problems where the rules should be followed to the letter without being compensated. Another important point that we have learned is that it is possible to combine ASP together with LLM for this type of problem. The combination of Answer Set Programming together with Large Language Model leads to a more user-friendly environment. Since ASP is good at following rules but is not good enough with text, it can check whether a solution is correct or not, but on the other hand it cannot explain why to the user. But that is where LLM's task comes in, it takes the answers for ASP and helps with virtualization to the user. \\
+Another important lesson is that the difficult task is not to build the application or the ASP encoding, but the challenge itself lies in the formulation of the problem and the solution. When the formulation of the problem is clearer and more adapted, it leads to the ASP encoding itself being easier to both implement and also to debug.
 
 \newpage
 \begin{thebibliography}{99}
