@@ -177,6 +177,7 @@ const MainBox = ({Level_instance, backgroundImg, difficulty}: propsmainBox) => {
               selected && selected.row === row && selected.column === column
                 ? "rgba(255,255,255,0.15)"
                 : "transparent",
+            color: cell?.init? "#ffffff" : "#008cffff",
           }}
           //onClick={() => setSelected({ row, column })}
           onClick= {()=> cellOnclick(row, column)}
