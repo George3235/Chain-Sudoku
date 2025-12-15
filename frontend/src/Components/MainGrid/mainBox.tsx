@@ -62,12 +62,20 @@ const MainBox = ({Level_instance, backgroundImg, difficulty}: propsmainBox) => {
     // Först kolla ifall användaren trycker på en cell
     if (selected) {
       // Hämtar hela raden från listan 
-      //const chosenCell = Level_instance.find(cell => cell.row === selected.row && cell.column === selected.column); 
+      const chosenCell = Level_instance.find(cell => cell.row === selected.row && cell.column === selected.column); 
       const api_req_give_hint = await give_hint_req(selected.row, selected.column, difficulty);
 
       if ( api_req_give_hint != "0" ){
         console.log("Inne i andra början")
-        Level_instance.push({row: selected.row, column: selected.column, user: Number(api_req_give_hint)});
+        // Om cellen inte finns, lägg till den
+        if (!chosenCell){
+          Level_instance.push({row: selected.row, column: selected.column, user: Number(api_req_give_hint)});
+        }
+        // Om cellen finns, updatera den
+        else {
+          const cellIndex = Level_instance.findIndex(cell => cell.row === selected.row && cell.column === selected.column);
+          Level_instance[cellIndex].user = Number(api_req_give_hint);
+        }
         // Uppdaterar listan 
         setBoard(createBoard(Level_instance))
         console.log("Inne i andra slutet")
