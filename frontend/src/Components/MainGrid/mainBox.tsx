@@ -62,12 +62,20 @@ const MainBox = ({Level_instance, backgroundImg, difficulty}: propsmainBox) => {
     // Först kolla ifall användaren trycker på en cell
     if (selected) {
       // Hämtar hela raden från listan 
-      //const chosenCell = Level_instance.find(cell => cell.row === selected.row && cell.column === selected.column); 
+      const chosenCell = Level_instance.find(cell => cell.row === selected.row && cell.column === selected.column); 
       const api_req_give_hint = await give_hint_req(selected.row, selected.column, difficulty);
 
       if ( api_req_give_hint != "0" ){
         console.log("Inne i andra början")
-        Level_instance.push({row: selected.row, column: selected.column, user: Number(api_req_give_hint)});
+        // Om cellen inte finns, lägg till den
+        if (!chosenCell){
+          Level_instance.push({row: selected.row, column: selected.column, user: Number(api_req_give_hint)});
+        }
+        // Om cellen finns, updatera den
+        else {
+          const cellIndex = Level_instance.findIndex(cell => cell.row === selected.row && cell.column === selected.column);
+          Level_instance[cellIndex].user = Number(api_req_give_hint);
+        }
         // Uppdaterar listan 
         setBoard(createBoard(Level_instance))
         console.log("Inne i andra slutet")
@@ -123,7 +131,7 @@ const MainBox = ({Level_instance, backgroundImg, difficulty}: propsmainBox) => {
       // I Början av spelet innehåller listan endast objekt med init value och då finns inte alla 0 till 80 cellerna  
       console.log("Inne i första hämtat API")
       console.log(api_req_add)
-      if ((!chosenCell )&& !api_req_add) {
+      if ((!chosenCell )&& api_req_add) {
         console.log("Inne i andra början")
         Level_instance.push({row: selected.row, column: selected.column, user: value});
         // Uppdaterar listan 
@@ -136,7 +144,7 @@ const MainBox = ({Level_instance, backgroundImg, difficulty}: propsmainBox) => {
         const api_req_add_redan = await add_number_req(selected.row, selected.column, value,difficulty);
         console.log("Inne i else if början")
         // Kolla om init siffra är undefined (innebär att det är en siffra som användare har skrivit själv)
-        if(!api_req_add_redan) {
+        if(api_req_add_redan) {
           // Tar reda på indexet för den cellen
           const cellIndex = Level_instance.findIndex(cell => cell.row === selected.row && cell.column === selected.column)  
           // Om den är undefined då uppdaterar vi user input av den cellen  
@@ -177,6 +185,8 @@ const MainBox = ({Level_instance, backgroundImg, difficulty}: propsmainBox) => {
               selected && selected.row === row && selected.column === column
                 ? "rgba(255,255,255,0.15)"
                 : "transparent",
+            color: cell?.init? "#ffffff" : "#008cffff",
+            fontSize: "1.5rem",
           }}
           //onClick={() => setSelected({ row, column })}
           onClick= {()=> cellOnclick(row, column)}
@@ -189,7 +199,7 @@ const MainBox = ({Level_instance, backgroundImg, difficulty}: propsmainBox) => {
   return (
     <Container
       maxWidth="xl"
-      sx={{ backgroundColor: "#363d44ff", height: "75vh" }}
+      sx={{ backgroundColor: "#363d44ff", height: "100%" }}
     >
       {/*Definerar områden för Själva Cirklarna grid och allt annat */}
       <Grid container sx={{ height: "100%" }}>
