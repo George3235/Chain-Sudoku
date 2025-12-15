@@ -142,12 +142,12 @@ Using ASP, we can modify the rules and constraint to fit other variants of Sudok
 An application can reuse a generic ASP sudoku solver while integrating different variation of the puzzle. 
 This could be done by inserting new rules and constraints via the Clingo API.
 Furthermore, the search algorithm for finding a solution is abstracted away which saves development time.
-The developer simple describes the rules and constraints and then let the solver handle the search efficiently.
+The developer simply describes the rules and constraints and then let the solver handle the search efficiently.
 
 \subsection{Hint and Solvability Mechanism}
 Solvability: When checking for solvability, we insert the current grid as facts into the ASP solver and check for (unsatisfiable / satisfiable).
             If the model output is unsatisfiable, we know that at least one cell value is incorrect. Therefore the puzzle is unsolvable from the current state.
-            When the puzzle is completed correctly, the user are alerted that the puzzle is correctly solved. 
+            When the puzzle is completed correctly, the user is alerted that the puzzle is correctly solved. 
 
 Hint system: The hint system is primitive, the user is given the correct value for a cell of their choosing.
 Frontend sends request for chosen (row,col), ASP solver solves the problem instance and returns the correct value to the user. 
