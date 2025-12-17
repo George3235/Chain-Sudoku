@@ -155,10 +155,77 @@ Frontend sends request for chosen (row,col), ASP solver solves the problem insta
 \newpage
 \section{Evaluation}
 
-{\it Describe how you evaluated your system (according to the evaluation suggestions given in the project description), and present the evaluation results.}
+The game is based on three instances which we know are solvable and therefore can check if the solver does a correct job. 
+If the project would have been creating its own gameboard, a checkout process should be implemented in order to check whether the created gameboard is solvable.
+But for our case, we take already solvable instances and create instances files which the frontend communicates to the backend 
+on which difficulty level the player has choosen in which the ASP solver then will base its search on.
 
-The game is based on three instances which we know is solvable and therefore can check if the solver does a correct job. 
-If the project would have been creating its own gameboard, a checkout process should be implementent in order to check whether the created gameboard is solvable. But for our case, we take already solvable instances and create instances files which the frontend compunicates to the backend on which difficulty level the player has choosen in which the ASP solver then will base its search on.
+\subsection{Evaluation Setup}
+To evaluate our system we focus on the ASP solver and the hint system.
+The sudoku board is a 9x9 grid with the chain restriction, rather than the
+classical box restriction.
+The ASP solver used in our project is Clingo.
+
+\subsection{Test Cases}
+We evaluate the ASP solver based on our three predefined sudoku problem instances.
+\begin{enumerate}
+  \item Easy
+  \item Medium
+  \item Hard
+\end{enumerate}
+
+\subsection{Evaluation Criteria}
+\begin{enumerate}
+  \item Solver correctness
+  \item Solver runtime
+\end{enumerate}
+
+\subsection{Evaluation Results}
+
+\subsubsection{Solver correctness}
+For each problem instance the solver is satisfiable and produces a unique solution.
+The solver produces a valid Strimko solution satisfying the constraint of our puzzle,
+(row,col and chain restriction). Figure 5 below visualizes the 
+initial state and final state using the clingo solver.
+The colors represents a unique chain.
+
+
+\begin{figure}[htbp]
+\centering
+  \begin{subfigure}{0.3\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{image/easy_instance.png} 
+    \caption{Easy instance}
+    \label{fig:easy}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.3\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{image/medium_instance.png}
+    \caption{Medium instance}
+    \label{fig:medium}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.3\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{image/hard_instance.png}
+    \caption{Hard instance}
+    \label{fig:hard}
+  \end{subfigure}
+  
+  \caption{Strimko instances of increasing difficulty}
+  \label{fig:instances}
+\end{figure}
+
+\subsubsection{Solver runtime}
+Regardless of instance difficulty, the solver performs well.
+The clingo solver is able to find a solution in a couple of milliseconds.
+\begin{enumerate}
+  \item Easy instance: 0.003s
+  \item Medium instance: 0.014s
+  \item Hard instance: 0.016s
+\end{enumerate}
+
 %Solvers runtime is ... 
 %The hint correctness is ... 
 %Solvability check behaviour ... 
