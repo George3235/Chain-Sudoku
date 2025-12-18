@@ -5,16 +5,27 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { FaEraser } from "react-icons/fa6";
 import { FaLightbulb } from "react-icons/fa";
-import {  useState, type JSX } from "react";
+import { useEffect, useState, type JSX } from "react";
 import type { Cell } from "../../puzzles/puzzle";
 import type { Levels } from "./Game";
+import Successful from "../Alerts/successful";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import * as React from "react";
 
 // API imports
-import {remove_number_req, add_number_req, give_hint_req} from "../../services/util"
+import {
+  remove_number_req,
+  add_number_req,
+  give_hint_req,
+} from "../../services/util";
 
 // props interace
 interface propsmainBox {
-  Level_instance: Cell[]; 
+  Level_instance: Cell[];
   backgroundImg: string;
   difficulty: Levels;
 }
@@ -27,7 +38,12 @@ function createBoard(inti: Cell[]): Cell[] {
       const initValue = inti.find((c) => c.row === row && c.column === column);
       // Om initial value finns
       if (initValue) {
-        emptyBoard.push({ row, column, init: initValue.init, user: initValue.user });
+        emptyBoard.push({
+          row,
+          column,
+          init: initValue.init,
+          user: initValue.user,
+        });
       }
       // Om initial value ej finns
       else {
@@ -38,12 +54,56 @@ function createBoard(inti: Cell[]): Cell[] {
   return emptyBoard;
 }
 
-// Gör att det finns default värden 
-const MainBox = ({Level_instance, backgroundImg, difficulty}: propsmainBox) => {
-  
+// Gör att det finns default värden
+const MainBox = ({
+  Level_instance,
+  backgroundImg,
+  difficulty,
+}: propsmainBox) => {
+
+  // Hanterar Dialog rutan för Done 
+  const [open, setOpen] = React.useState(false);
+
+  // Öppnar Dialog rutan för Done
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  // Stänger Dialog Rutan för Done
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  // Hanterar Dialog rutan för Wrong input 
+  const [openDialog, setOpenDialog] = useState(false);
+
+  // För att Öppna dialogen med fel meddelande
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  // För att stända dialogen med fel meddelande
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
   
   // En State som fyller i Bräda i UI
   const [board, setBoard] = useState<Cell[]>(() => createBoard(Level_instance));
+
+
+  // För att uppdatera när hela spelet är klart.
+  useEffect(() => {
+    // Räknar antalet celler som är ifyllda, användare eller init
+    const correctCells = board.filter(
+      (cell) => cell.init !== undefined || cell.user !== undefined
+    ).length;
+
+    // Om längden är 81 då är den klar
+    if (correctCells === 81) {
+      console.log("Bra jobbat du är inte dum");
+      handleClickOpen()
+    }
+  }, [board]);
 
   // State som används för att läsa av vilken cell som användaren trycker på
   const [selected, setSelected] = useState<{
@@ -51,115 +111,159 @@ const MainBox = ({Level_instance, backgroundImg, difficulty}: propsmainBox) => {
     column: number;
   } | null>(null);
 
-  // Funktionen som hanterar om man trycker på en cell 
-  const cellOnclick = (row:number, column:number) => {
+  // Funktionen som hanterar om man trycker på en cell
+  const cellOnclick = (row: number, column: number) => {
     // Då kommer den Raden och Columnen att sparas i selected- variablen
-    setSelected({row,column })
-  }
+    setSelected({ row, column });
+  };
 
   // Funktionen som hanterar när användaren vill ha en ledtråd för en cell
-  const hintHandler = async() => {
+  const hintHandler = async () => {
     // Först kolla ifall användaren trycker på en cell
     if (selected) {
-      // Hämtar hela raden från listan 
-      const chosenCell = Level_instance.find(cell => cell.row === selected.row && cell.column === selected.column); 
-      const api_req_give_hint = await give_hint_req(selected.row, selected.column, difficulty);
+      // Hämtar hela raden från listan
+      const chosenCell = Level_instance.find(
+        (cell) => cell.row === selected.row && cell.column === selected.column
+      );
+      const api_req_give_hint = await give_hint_req(
+        selected.row,
+        selected.column,
+        difficulty
+      );
 
-      if ( api_req_give_hint != "0" ){
-        console.log("Inne i andra början")
+      if (api_req_give_hint != "0") {
+        console.log("Inne i andra början");
         // Om cellen inte finns, lägg till den
-        if (!chosenCell){
-          Level_instance.push({row: selected.row, column: selected.column, user: Number(api_req_give_hint)});
+        if (!chosenCell) {
+          Level_instance.push({
+            row: selected.row,
+            column: selected.column,
+            user: Number(api_req_give_hint),
+          });
         }
         // Om cellen finns, updatera den
         else {
-          const cellIndex = Level_instance.findIndex(cell => cell.row === selected.row && cell.column === selected.column);
+          const cellIndex = Level_instance.findIndex(
+            (cell) =>
+              cell.row === selected.row && cell.column === selected.column
+          );
           Level_instance[cellIndex].user = Number(api_req_give_hint);
         }
-        // Uppdaterar listan 
-        setBoard(createBoard(Level_instance))
-        console.log("Inne i andra slutet")
+        // Uppdaterar listan
+        setBoard(createBoard(Level_instance));
+        console.log("Inne i andra slutet");
         return;
-      }
-      else {
+      } else {
         return;
       }
     }
-  }
+  };
 
   // Funktion som hanterar om användaren vill ta bort ett värde från en lägg
-  const deleteHandler = async() => {
+  const deleteHandler = async () => {
     // Först kolla om användaren trycker på en cell
-    if(selected) {
-      // Hämtar hela raden från listan 
-      const chosenCell = Level_instance.find(cell => cell.row === selected.row && cell.column === selected.column); 
+    if (selected) {
+      // Hämtar hela raden från listan
+      const chosenCell = Level_instance.find(
+        (cell) => cell.row === selected.row && cell.column === selected.column
+      );
 
       // om det finns ett objekt i listan med den cellen
       if (chosenCell) {
-        // Kolla så att dess init är undefined 
-        const api_req_remove = await remove_number_req(selected.row, selected.column, difficulty);
-        if(!api_req_remove) {
-          console.log("Du kan inte ta bort init din åsna")
-          return
+        // Kolla så att dess init är undefined
+        const api_req_remove = await remove_number_req(
+          selected.row,
+          selected.column,
+          difficulty
+        );
+        if (!api_req_remove) {
+          console.log("Du kan inte ta bort init din åsna");
+          return;
         }
-        
 
         // Ta reda på cellens index
-        const ind = Level_instance.findIndex(cell => cell.row === selected.row && cell.column === selected.column);
-        Level_instance.splice(ind, 1)
-        // Uppdaterar listan 
-        setBoard(createBoard(Level_instance))
-        return; 
-        
-        console.log("Something Wrong 1")
-      } 
-      console.log("Something Wrong 2")
-    }
-    console.log("Cellen finns inte med i listan")
-  }
+        const ind = Level_instance.findIndex(
+          (cell) => cell.row === selected.row && cell.column === selected.column
+        );
+        Level_instance.splice(ind, 1);
+        // Uppdaterar listan
+        setBoard(createBoard(Level_instance));
+        return;
 
-  // Funktionen som hanterar om man trycker på en cell och en siffra samtidigt => Lägg till den siffran i den cellen. 
+        console.log("Something Wrong 1");
+      }
+      console.log("Something Wrong 2");
+    }
+    console.log("Cellen finns inte med i listan");
+  };
+
+  // Funktionen som hanterar om man trycker på en cell och en siffra samtidigt => Lägg till den siffran i den cellen.
   const handlePressNumber = async (value: number) => {
-    
     // Först kolla om användern trycker på en cell
-    if(selected) {
-      console.log("Inne i första början")
-      // Hämtar hela raden från listan 
-      const chosenCell = Level_instance.find(cell => cell.row === selected.row && cell.column === selected.column); 
+    if (selected) {
+      console.log("Inne i första början");
+      // Hämtar hela raden från listan
+      const chosenCell = Level_instance.find(
+        (cell) => cell.row === selected.row && cell.column === selected.column
+      );
       // Om den är True så ska man lägga till siffran annars nooo (Eller annat)
-      const api_req_add = await add_number_req(selected.row, selected.column, value,difficulty);
-      // I Början av spelet innehåller listan endast objekt med init value och då finns inte alla 0 till 80 cellerna  
-      console.log("Inne i första hämtat API")
-      console.log(api_req_add)
-      if ((!chosenCell )&& api_req_add) {
-        console.log("Inne i andra början")
-        Level_instance.push({row: selected.row, column: selected.column, user: value});
-        // Uppdaterar listan 
-        setBoard(createBoard(Level_instance))
-        console.log("Inne i andra slutet")
+      const api_req_add = await add_number_req(
+        selected.row,
+        selected.column,
+        value,
+        difficulty
+      );
+      // I Början av spelet innehåller listan endast objekt med init value och då finns inte alla 0 till 80 cellerna
+      console.log("Inne i första hämtat API");
+      console.log(api_req_add);
+
+      if (!chosenCell && api_req_add) {
+        console.log("Inne i andra början");
+        Level_instance.push({
+          row: selected.row,
+          column: selected.column,
+          user: value,
+        });
+        // Uppdaterar listan
+        setBoard(createBoard(Level_instance));
+        console.log("Inne i andra slutet");
         return; // Avslutar då
       }
-      // Om den raden finns: 
-      else if(chosenCell) {
-        const api_req_add_redan = await add_number_req(selected.row, selected.column, value,difficulty);
-        console.log("Inne i else if början")
+      // Om den är tom men input value är fel
+      else if (!chosenCell && !api_req_add) {
+        handleOpenDialog()
+        return
+      }
+      // Om den raden finns:
+      else if (chosenCell) {
+        const api_req_add_redan = await add_number_req(
+          selected.row,
+          selected.column,
+          value,
+          difficulty
+        );
+        console.log("Inne i else if början");
         // Kolla om init siffra är undefined (innebär att det är en siffra som användare har skrivit själv)
-        if(api_req_add_redan) {
+        if (api_req_add_redan) {
           // Tar reda på indexet för den cellen
-          const cellIndex = Level_instance.findIndex(cell => cell.row === selected.row && cell.column === selected.column)  
-          // Om den är undefined då uppdaterar vi user input av den cellen  
-          Level_instance[cellIndex].user = value
-          // Uppdaterar listan 
-          setBoard(createBoard(Level_instance))
+          const cellIndex = Level_instance.findIndex(
+            (cell) =>
+              cell.row === selected.row && cell.column === selected.column
+          );
+          // Om den är undefined då uppdaterar vi user input av den cellen
+          Level_instance[cellIndex].user = value;
+          // Uppdaterar listan
+          setBoard(createBoard(Level_instance));
           return; // Avslutar då
         } else {
+          handleOpenDialog();
           // skriv i Console att det är en init siffra (i vanliga spel ignoreras detta)
-          console.log("Init värde kan man inte ändra på")
+          console.log("Init värde kan man inte ändra på");
         }
       }
     }
-    console.log("User pressed: ", value)
-  }
+    console.log("User pressed: ", value);
+  };
   // För att skapa cellerna
   const boxes: JSX.Element[] = [];
 
@@ -185,22 +289,56 @@ const MainBox = ({Level_instance, backgroundImg, difficulty}: propsmainBox) => {
               selected && selected.row === row && selected.column === column
                 ? "rgba(255,255,255,0.15)"
                 : "transparent",
-            color: cell?.init? "#ffffff" : "#008cffff",
+            color: cell?.init ? "#ffffff" : "#008cffff",
             fontSize: "1.5rem",
           }}
           //onClick={() => setSelected({ row, column })}
-          onClick= {()=> cellOnclick(row, column)}
+          onClick={() => cellOnclick(row, column)}
         >
           {showVal}
         </Box>
       );
     }
   }
+
   return (
     <Container
       maxWidth="xl"
       sx={{ backgroundColor: "#363d44ff", height: "100%" }}
     >
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle id="alert-dialog-title">{"Wrong Inupt!"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Wrong input value, please try again with another value.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} variant="outlined">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        sx={{ color: "#257fdaff"}}
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Good job you have successfuly solved this level!"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Thank you for trying our game
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} variant="outlined">Close</Button>
+        </DialogActions>
+      </Dialog>
       {/*Definerar områden för Själva Cirklarna grid och allt annat */}
       <Grid container sx={{ height: "100%" }}>
         {/* Den delen innehåller själva området för spelet */}
@@ -272,7 +410,6 @@ const MainBox = ({Level_instance, backgroundImg, difficulty}: propsmainBox) => {
                 <Button
                   variant="outlined"
                   sx={{ height: "100%", width: "100%" }}
-
                   onClick={() => handlePressNumber(1)}
                 >
                   <Typography variant="h2">1</Typography>
@@ -355,10 +492,18 @@ const MainBox = ({Level_instance, backgroundImg, difficulty}: propsmainBox) => {
                   p: 1,
                 }}
               >
-                <Button size="large" sx={{ borderRadius: 25 }} onClick={() => deleteHandler()}>
+                <Button
+                  size="large"
+                  sx={{ borderRadius: 25 }}
+                  onClick={() => deleteHandler()}
+                >
                   <FaEraser size={70} />
                 </Button>
-                <Button size="large" sx={{ borderRadius: 25 }} onClick={() => hintHandler()}>
+                <Button
+                  size="large"
+                  sx={{ borderRadius: 25 }}
+                  onClick={() => hintHandler()}
+                >
                   <FaLightbulb size={70} />
                 </Button>
               </Box>

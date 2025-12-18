@@ -61,14 +61,12 @@ class SudokuClass:
         if self.initial_grid[row][col] != 0:
             return False 
         
-        self.current_grid[row][col] = number
-        return True
-        #solve_grid = self.solve_sudoku(temp=True)
+        solve_grid = self.solve_sudoku(temp=True)
 
-        #if solve_grid[row][col] == number:
-        #    return True
-        #else:
-        #    return False
+        if solve_grid[row][col] == number:
+            return True
+        else:
+            return False
 
 
 
